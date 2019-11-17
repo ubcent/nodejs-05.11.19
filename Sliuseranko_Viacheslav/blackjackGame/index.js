@@ -7,11 +7,17 @@
         В качестве более продвинутой версии
     задания можете реализовать простейшую версию игры Blackjack.
 */
-const { getRandomNumber } = require('../helpers');
-const { EventEmitter } = require('events');
-const readline = require('readline');
-const clc = require('cli-color');
 const { keys } = Object;
+
+const clc = require('cli-color');
+const readline = require('readline');
+const { EventEmitter } = require('events');
+
+const { Logger } = require('../logger');
+const { getRandomNumber } = require('../helpers');
+
+/** константы которые используются для игры */
+const { COMMANDS, LOG_FILE, CARTS_COUNT, USER, CPU, NO_WINNERS, MIDDLE_VALUE, VALUE_MAX } = require('./constants');
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -19,24 +25,10 @@ const rl = readline.createInterface({
 });
 
 class Game extends EventEmitter {
-    static USER = 'user';
-    static CPU = 'cpu';
-    static NO_WINNERS = 'draw';
-    static CARTS_COUNT = 2;
-    static VALUE_MAX = 21;
-    static MIDDLE_VALUE = 16;
-
-    /** игровые команды */
-    commands = {
-        START: 'r',
-        EXIT: 'q',
-        TAKE_CARD: 'y',
-        PASS: 'p',
-        MY_CARDS: 's'
-    };
-
+    /** признак начала игры */
+    gameStart = false;
     /** цвета для игроков */
-    colors = { [Game.USER]: 'green', [Game.CPU]: 'blue' };
+    colors = { [USER]: 'green', [CPU]: 'blue' };
 
     /** колода карт */
     cards = {
@@ -51,42 +43,52 @@ class Game extends EventEmitter {
         T: { value: 11, count: 4 }
     };
     /** Игроки и их карты */
-    players = { [Game.USER]: [], [Game.CPU]: [] };
+    players = { [USER]: [], [CPU]: [] };
 
     constructor() {
         super();
         this.cardsNames = keys( this.cards);
     }
-    /** Установка цвета имени игрока перед выводом в консоль */
-    setUserText(user) {
-        const key = this.colors[user];
-        const cliMethod = clc[ key ]
+    /** Установка цвета имени игрока перед выводом в консоль
+     * @param player игрок
+     **/
+    setUserText(player) {
+        const key = this.colors[ player ];
+        const cliMethod = clc[ key ];
 
-        return cliMethod( user );
+        return cliMethod( player );
     }
-    /** Вывод сообщения в консоль */
-    print(msg, style = null ) {
+    /**
+     * Вывод сообщения в консоль
+     * @param msg текст сообщения
+     * @param style стиль если нужен ( ключь метода cli-color )
+     **/
+    static print(msg, style = null ) {
         const printMethod = clc[ style ] || clc.yellow;
         console.log( `${ printMethod( msg ) }` );
     }
-    /** Написать сообщение с указанием игрока */
+    /**
+     * Написать сообщение с указанием игрока
+     * @param user
+     * @param msg
+     **/
     printMessageWithActiveUser(user, msg) {
-        this.print(`${ this.setUserText( user ) } ${ msg }`);
+        Game.print(`${ this.setUserText( user ) } ${ msg }`);
     }
     /** Вывод правил игры ( управление ) */
-    showRules() {
-        const { START, EXIT, PASS, TAKE_CARD, MY_CARDS } = this.commands;
+    static showRules() {
+        const { START, EXIT, PASS, TAKE_CARD, MY_CARDS } = COMMANDS;
 
-        this.print(`To start game enter ${ clc.red( START ) }`, 'blue');
-        this.print(`In game press ${ clc.red( TAKE_CARD ) } to take card, or ${ clc.red( PASS ) } to pass.`, 'blue' );
-        this.print(`To see your cards enter ${ clc.red( MY_CARDS ) }`, 'blue' );
-        this.print(`To exit game enter ${ clc.red( EXIT ) }`, 'blue');
+        Game.print(`To start game enter ${ clc.red( START ) }`, 'blue');
+        Game.print(`In game press ${ clc.red( TAKE_CARD ) } to take card, or ${ clc.red( PASS ) } to pass.`, 'blue' );
+        Game.print(`To see your cards enter ${ clc.red( MY_CARDS ) }`, 'blue' );
+        Game.print(`To exit game enter ${ clc.red( EXIT ) }`, 'blue');
     }
 
     /** Игровой процесс */
     start() {
-        const { START, EXIT, PASS, TAKE_CARD, MY_CARDS } = this.commands;
-        this.showRules();
+        const { START, EXIT, PASS, TAKE_CARD, MY_CARDS } = COMMANDS;
+        Game.showRules();
         rl.on('line', (cmd) => {
             switch (cmd) {
                 case START: {
@@ -96,7 +98,9 @@ class Game extends EventEmitter {
                     return this.showCardsToPlayer();
                 }
                 case TAKE_CARD: {
-                    const { USER } = Game;
+                    if ( !this.gameStart ) {
+                        return this.gamePrepare();
+                    }
                     this.addCardToPlayer( USER );
                     this.checkCards(USER);
                     return;
@@ -108,23 +112,25 @@ class Game extends EventEmitter {
                     return rl.close();
                 }
                 default: {
-                    this.print('Your command in invalid!', 'red');
-                    return this.showRules();
+                    Game.print('Your command in invalid!', 'red');
+                    return Game.showRules();
                 }
             }
         });
     }
     /** Начало игры, раздача  карт, и вскрытие карты компьютера */
     gamePrepare() {
-        this.print('\tGame Start. Cards is given to players', 'red');
         const playersList = keys(this.players);
+
+        Game.print('\tGame Start. Cards is given to players', 'red');
+        this.gameStart = true;
         this.giveCardsToPlayers(playersList);
 
         this.showOneCardFromCpu();
     }
     /** Раздача рандомных карт игрокам */
     giveCardsToPlayers(playersList) {
-        for ( let i = 0; i < Game.CARTS_COUNT; i++ ) {
+        for ( let i = 0; i < CARTS_COUNT; i++ ) {
             playersList.forEach( player => {
                 this.addCardToPlayer(player);
             });
@@ -132,7 +138,6 @@ class Game extends EventEmitter {
     }
     /** Простая логика робота ( cpu потому что на сеге всегда компьютера так называли ) */
     cpuInit() {
-        const { CPU, MIDDLE_VALUE } = Game;
         const chance = getRandomNumber(1);
         let value = this.getPlayerCardsSum( CPU );
         let take = ( value < MIDDLE_VALUE || value === MIDDLE_VALUE && chance );
@@ -150,53 +155,64 @@ class Game extends EventEmitter {
     }
     /** Вскрытие карт и определение победителя */
     showAllCards() {
-        const { CPU, USER, NO_WINNERS } = Game;
         const userValue = this.getPlayerCardsSum(USER);
         const cpuValue = this.getPlayerCardsSum(CPU);
         const isDraw = ( userValue === cpuValue );
+
         let winner = NO_WINNERS;
 
         if ( !isDraw ) {
             winner = ( userValue < cpuValue) ? CPU :  USER ;
         }
-        this.setWiner( winner );
+        this.setWinner( winner );
     }
-    /** Обьявление победителя и завершение игры */
-    setWiner(winner) {
-        console.log(
-            {
-               user: this.getPlayerCardsSum( Game.USER ),
-               cpu: this.getPlayerCardsSum(Game.CPU)
+    /**
+     * Обьявление победителя и завершение игры
+     * @param winner
+     **/
+    setWinner(winner) {
+        /** данный лог очень удобный для информирования результатов игры */
+        console.log({
+               user: this.getPlayerCardsSum( USER ),
+               cpu: this.getPlayerCardsSum( CPU )
             }
-        )
-        if ( winner === Game.NO_WINNERS ) {
-            this.print(`${ winner }! No winners`);
+        );
+
+        if ( winner === NO_WINNERS ) {
+            Game.print(`${ winner }! No winners`);
         } else {
-            this.print(`${ this.setUserText(winner) } is win!`);
+            Game.print(`${ this.setUserText(winner) } is win!`);
         }
-        rl.close();
+
+        this.emit('gameEnd', { file: LOG_FILE, winner  });
     }
     /** Показать рандомную карту у компьютера */
     showOneCardFromCpu() {
         const randomCard = getRandomNumber( 1 );
-        const { kard } = this.players[ Game.CPU ][ randomCard ];
-        this.printMessageWithActiveUser(Game.CPU, `show his card! it is ${ clc.red( kard ) }`)
+        const { card } = this.players[ CPU ][ randomCard ];
+        this.printMessageWithActiveUser( CPU, `show his card! it is ${ clc.red( card ) }`)
     }
     /** Метод помощник просмотра своих карт, + показывает сумму, для упрощение процесса игры */
     showCardsToPlayer() {
-        const kards = this.players[ Game.USER ];
-        const userCards = kards.map( ({ kard }) => kard );
+        const cards = this.players[ USER ];
+        const userCards = cards.map( ({ card }) => card );
         const msg = clc.red( userCards.join(', ') || 'empty' );
-        const totalSumm = this.getPlayerCardsSum( Game.USER );
+        const totalSum = this.getPlayerCardsSum( USER );
 
-        this.printMessageWithActiveUser(Game.USER, `cards is ${ msg } value ${ totalSumm } `);
+        this.printMessageWithActiveUser( USER, `cards is ${ msg } value ${ totalSum } `);
     }
-    /** Получить сумму карт у игрока */
+    /**
+     * Получить сумму карт у игрока
+     * @param player
+     **/
     getPlayerCardsSum(player) {
         const cards = this.players[ player ];
         return cards.reduce((acc, { value } ) => value + acc, 0);
     }
-    /** Добавить карту игроку */
+    /**
+     * Добавить карту игроку
+     * @param player
+     **/
     addCardToPlayer = (player) => {
         const length = this.cardsNames.length;
         const randomCard = this.cardsNames[ getRandomNumber( length - 1 ) ];
@@ -206,28 +222,39 @@ class Game extends EventEmitter {
         if ( !this.cards[randomCard].count ) {
             delete this.cards[ randomCard ];
         }
-        this.players[player].push( { kard: randomCard, value } );
+        this.players[player].push( { card: randomCard, value } );
 
-        if ( player === Game.USER ) {
-            this.print(`You take ${ randomCard }`);
+        if ( player === USER ) {
+            Game.print(`You take ${ randomCard }`);
         }
         return value
-    }
-    /** Проверка на перебор, или 21 */
+    };
+    /**
+     * Проверка на перебор, или 21
+     * @param player
+     **/
     checkCards(player) {
-        const { VALUE_MAX } = Game;
         const value = this.getPlayerCardsSum(player);
-
         if ( value > VALUE_MAX ) {
-            const playersList = Object.keys( this.players );
+            const playersList = keys( this.players );
             const winner = playersList.find((key) => key !== player );
-            return this.setWiner( winner );
+            return this.setWinner( winner );
         } else if ( value === VALUE_MAX ) {
-            return this.setWiner( player );
+            return this.setWinner( player );
         }
         return true;
     }
 }
 
+/** Start game */
+const game = new Game();
+
+/** отлавливаем событие завершения игры. Записываем лог и закрываем приложение */
+game.on('gameEnd', (props) => {
+    const { file, winner } = props;
+    rl.close();
+    Logger.writeLog(file, winner );
+});
+
 /** старт игры, игроков 2 */
-(new Game()).start();
+game.start();
