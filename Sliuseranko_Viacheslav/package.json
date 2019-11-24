@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/Cheefs/nodejs-05.11.19#readme",
   "dependencies": {
-    "cli-color": "^2.0.0"
+    "cheerio": "^1.0.0-rc.3",
+    "cli-color": "^2.0.0",
+    "request": "^2.88.0"
   }
 }
