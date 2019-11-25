@@ -72,5 +72,5 @@ rl.on('line', ( cmd ) => {
     }
     translate
         .setText( cmd )
-        .getTranslate( cmd );
+        .getTranslate();
 });

@@ -96,8 +96,9 @@ const server = createServer( (req, res) =>
         if ( !error && response.statusCode === CODE_OK ) {
             const parser = new Parser( html, MAIN_SELECTOR, PARAMS_SELECTOR );
             res.write( parser.getNews() );
+        } else {
+            res.write( 'Server is unavailable! Please try again later' );
         }
-        res.write( 'Server is unavailable! Please try again later' );
         res.end();
     })
 ).listen(PORT);
