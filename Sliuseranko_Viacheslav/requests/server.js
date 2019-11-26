@@ -64,7 +64,7 @@ class Parser extends Cheerio {
         html( selector ).each( ( idx, element ) => {
             let method = () => html( element ).text();
 
-            if ( [ IMG ].includes( key ) ) {
+            if ( key === IMG ) {
                 method = () => html( element ).data('src');
             }
             /** обновляем обьект новостей заполняя новыми данными, и сохраняя уже существующие */
@@ -104,7 +104,7 @@ const server = createServer( (req, res) =>
 ).listen(PORT);
 
 /**  просто подсказка что сервер запустился, и на каком порту */
-server.on( 'listening' , () =>  console.log([
+server.on( 'listening' , () => console.log([
         clc.yellow(`==================== Server start ====================`),
         clc.green(`\t${ SERVER_URL }:${ PORT }`)
     ].join('\n')

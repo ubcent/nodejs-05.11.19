@@ -18,7 +18,7 @@ class Translate {
     state = {
         url: 'https://translate.yandex.net/api/v1.5/tr.json/translate',
         key: 'trnsl.1.1.20191123T035539Z.11f37bc35e92c80a.d6cf7aafb855a540ffc51a473ff508a5131eded3',
-        lang: 'ru',
+        lang: 'ru-en',
         text: ''
     };
 
@@ -32,14 +32,14 @@ class Translate {
         console.log( `Your word Translate as: ${ clc.yellow( translate ) }` );
     }
     
-    /** данная функция обработчик, и его лучше делать стрелочной функцией ( чтобы не потерять контекст )*/
-    handleResponse = (err, res) => {
+    /** обработка ответа */
+    handleResponse(err, res) {
         if ( err ) {
             return Translate.print( err );
         }
         const { text } = JSON.parse( res.body );
         return Translate.print( text );
-    };
+    }
     
     /** функция которая запускает всю необходимую логику получения ответа от яндекса */
     getTranslate() {
