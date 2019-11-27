@@ -16,9 +16,11 @@
     "consolidate": "^0.15.1",
     "express": "^4.17.1",
     "handlebars": "^4.5.3",
+    "inquirer": "^7.0.0",
     "minimist": "^1.2.0",
     "nodemailer": "^6.3.1",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "request-promise": "^4.2.5"
   },
   "devDependencies": {
     "pm2": "^4.1.2"
