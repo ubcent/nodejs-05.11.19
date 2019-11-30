@@ -1,7 +1,20 @@
 <div style="border: 1px solid black;">
-    <h2 style="text-align: center;">Новости Канады</h2>
-    <form method="POST" action="/responseNews">
-        <input type="text" name="count" placeholder="Количество новостей">
-        <input type="submit" value="Отобразить">
+    <h2 style="text-align: center;">Canada News</h2>
+    <form style="text-align: center;" method="POST" action="/newsQueryResult">
+        <input type="text" name="count" placeholder="Number of News">
+        <input type="submit" value="Display">
     </form>
+
+    {{#each newsArray}}
+    {{#if visibleNews}}
+    <div style="border: 1px solid black; margin: 10px;">
+        <div style="margin: 10px; color: red;">
+            <h3>{{this.headerNews}}</h3>
+        </div>
+        <div style="margin: 10px;">
+            <h4>{{this.bodyNews}}</h4>
+        </div>
+    </div>
+    {{/if}}
+    {{/each}}
 </div>

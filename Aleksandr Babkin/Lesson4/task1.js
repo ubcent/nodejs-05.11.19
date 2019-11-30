@@ -1,6 +1,5 @@
 const request = require('request');
 const cheerio = require('cheerio');
-const colors = require('colors');
 const express = require('express');
 const consolidate = require('consolidate');
 const path = require('path');
@@ -15,28 +14,30 @@ app.listen(3000, () => {
     console.log('Server is starting!')
 })
 
-// const news = {};
-
-
-
-app.get('/:news', (req, res) => {
+app.get('/news', (req, res) => {
     res.render('news');
 })
 
-app.post('/responseNews', (req, res) => {
+app.post('/newsQueryResult', (req, res) => {
+    let newsArray = [];
     request('https://www.cbc.ca/news', (err, res, body) => {
+
         if (!err && res.statusCode == 200) {
+
             const $ = cheerio.load(body);
             let i = 0;
-            let newsArray = [];
-            while (i < 6) {
+
+            while (i < req.body.count) {
                 let headerNews = $('.headline').eq(i).text();
                 let bodyNews = $('.description').eq(i).text();
-                newsArray.push({ 'headerNews': headerNews, 'bodynews': bodyNews });
+                let visibleNews = true;
+                newsArray.push({ 'headerNews': headerNews, 'bodyNews': bodyNews, 'visibleNews': visibleNews });
                 i++;
-            } 
-            console.log(newsArray);
+            }
         }
     });
-})
 
+    setTimeout(() => {
+        res.render('news', { newsArray });
+    }, 8000);
+})
