@@ -1,0 +1,18 @@
+<div>
+    <h2>{{username}}</h2>
+
+    {{#if age}}
+    <div>Возраст: {{age}}</div>
+    {{/if}}
+
+    <ul>
+        {{#each achievements}}
+        <li>{{this}}</li>
+        {{/each}}
+    </ul>
+</div>
+
+<form method="POST" action="/settings">
+    <input type="text" name="count" placeholder="Количество новостей" />
+    <input type="submit" />
+</form>
