@@ -17,7 +17,7 @@ request('https://yandex.ru/news' ,(err, res, body) => {
                 console.log('\n=================');
                 console.log(`Заголовок: ${title}`);
                 console.log(`Источник: ${date}`);
-                console.log(`ссылка: https://yandex/${href}`);
+                console.log(`ссылка: https://yandex${href}`);
                 console.log('=================\n');
             });
 
