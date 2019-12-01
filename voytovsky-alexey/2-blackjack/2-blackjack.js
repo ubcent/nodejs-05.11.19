@@ -2,25 +2,35 @@ const readline = require('readline');
 const minimist = require('minimist');
 const argv = minimist(process.argv.splice(2));
 const fs = require('fs');
-const { promisify } = require('util');
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
 
-// Создание файла логирования
+// Создание файла логирования и запись исхода игры
 let logFile = argv._[0];
 
 const writeDownResults = (data) =>
-  fs.appendFile('./logFile.json', data, 'utf8', (err) => {
-    if (err) {
-      console.error(err);
-      process.exit(1);
-    }
-  });
+  new Promise(async (resolve, reject) => {
+    fs.appendFile('./logFile.txt', data, 'utf8', (err) => {
+      try {
+        if (err) {
+          console.error(err);
+          process.exit(1);
+        }
 
-if (!logFile) logFile = './logFile.json';
+        resolve (data);
+      }
+      catch (err) {
+        reject(err);
+        console.error(err);
+        process.exit(1);
+      }
+    });
+  })
+
+if (!logFile) logFile = './logFile.txt';
 
 // Реализация игровой логики
 const program = async () => {
@@ -85,6 +95,7 @@ const program = async () => {
             await checkSum(sumPlayer, sumDealer, response);
 
           } else {
+            // Цикл не работает
             while (sumDealer < 17) {
               await dealCards(dealer);
               sumDealer = await getSum(dealer);
@@ -106,43 +117,37 @@ const program = async () => {
       try {
         if (sumPlayer == 21 && response == '1') {
           resolve(console.log(`Вам невероятно везёт! Вы выиграли!\n ${getStatus(player, dealer)}`));
-          // Почему-то результат не записывается
-          writeDownResults('Victory');
+          await writeDownResults('Victory\n');
           process.exit(0);
 
         } else if (sumPlayer > 21) {
           resolve(console.log(`У вас перебор! Вы проиграли!\n ${getStatus(player, dealer)}`));
-          // Почему-то результат не записывается
-          writeDownResults('Defeat');
+          await writeDownResults('Defeat\n');
           process.exit(0);
         }
   
         if (sumDealer == 21) {
           resolve(console.log(`На этот раз удача на стороне казино! Вы проиграли!\n ${getStatus(player, dealer)}`));
-          // Почему-то результат не записывается
-          writeDownResults('Defeat');
+          await writeDownResults('Defeat\n');
           process.exit(0);
 
         } else if (sumDealer > 21) {
           resolve(console.log(`У дилера перебор! Вы выиграли!\n ${getStatus(player, dealer)}`));
-          // Почему-то результат не записывается
-          writeDownResults('Victory');
+          await writeDownResults('Victory\n');
           process.exit(0);
 
         } else if (sumDealer == sumPlayer) {
           resolve(console.log(`Ничья!\n ${getStatus(player, dealer)}`));
-          // Почему-то результат не записывается
-          writeDownResults('Draw');
+          await writeDownResults('Draw\n');
           process.exit(0);
 
         } else if ((sumDealer < sumPlayer) && response != '1') {
           resolve(console.log(`Выигрыш!\n ${getStatus(player, dealer)}`));
-          // Почему-то результат не записывается
-          writeDownResults('Victory');
+          await writeDownResults('Victory\n');
           process.exit(0);
         }
 
-        await (askQuestion(player, dealer));
+        await askQuestion(player, dealer);
       }
       catch (err) {
         reject(err);
@@ -150,7 +155,7 @@ const program = async () => {
         process.exit(1);
       }
     });
-
+    
   // Колода карт
   const cardDeck = [
     '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A',   // ♤ 
@@ -181,10 +186,10 @@ const program = async () => {
     }
   });
 
-  checkOnDealBlackjack.then(sumPlayer => {
+  checkOnDealBlackjack.then(async sumPlayer => {
     if (sumPlayer == 21) {
       console.log(`Блэкджек при раздаче! Вы выиграли! ${getStatus(player, dealer)}`);
-      writeDownResults('Victory');
+      await writeDownResults('Victory\n');
       process.exit(0);
     }
   });
