@@ -187,10 +187,15 @@ const program = async () => {
   });
 
   checkOnDealBlackjack.then(async sumPlayer => {
-    if (sumPlayer == 21) {
-      console.log(`Блэкджек при раздаче! Вы выиграли! ${getStatus(player, dealer)}`);
-      await writeDownResults('Victory\n');
-      process.exit(0);
+    try {
+      if (sumPlayer == 21) {
+        console.log(`Блэкджек при раздаче! Вы выиграли! ${getStatus(player, dealer)}`);
+        await writeDownResults('Victory\n');
+        process.exit(0);
+      }
+    } catch(err) {
+      console.error(err);
+      process.exit(1);
     }
   });
 
