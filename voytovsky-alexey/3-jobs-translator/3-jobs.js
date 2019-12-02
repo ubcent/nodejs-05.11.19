@@ -2,7 +2,7 @@ const request = require('request');
 const cheerio = require('cheerio');
 
 const program = () => {
-	
+
 	const url = 'https://moikrug.ru/vacancies?q=node.js&currency=rur&location=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0&city_id=678&with_salary=1';
 
 	request(url, (err, response, body) => {
