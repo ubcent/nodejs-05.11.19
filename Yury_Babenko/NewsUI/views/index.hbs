@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Новостной портал</title>
+</head>
+<body>
+  <form action="/" method="post">
+    <div>
+      <label for="portal">Выберите новостной портал</label>
+      <select name="portal" id="portal">
+        <option value="vesti">Вести</option>
+        <option value="svoboda">Радио Свобода</option>
+        <option value="svpressa">Свободная пресса</option>
+      </select>
+    </div>
+    <div>
+      <label for="count">Количество отображаемых новостей</label>
+      <input name="count" id="count" type="number" placeholder="Введите количество">
+    </div>
+    <input type="submit" value="Показать">
+  </form>
+  <ol>
+    {{#each news}}
+    <li>
+      <div style="margin-bottom:20px">
+        <div><b>Дата: </b>{{this.date}}</div>
+        <div><b>Заголовок: </b>{{this.title}}</div>
+        <a href="{{this.link}}" target="_blank">Подробнее</a>
+      </div>
+    </li>
+    {{/each}}
+  </ol>
+</body>
+</html>
