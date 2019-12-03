@@ -1,0 +1,23 @@
+
+<form method='POST' action='/news'>
+    <input list='news' type='text' name='name' placeholder='Новостной источник'/>
+    <datalist id='news'>
+        <option value='hitech' />
+        <option value='wek' />
+        <option value='bravica' />
+    </datalist>
+    <input type='text' name='count' placeholder='Количество новостей' />
+    <input type='submit' />
+</form>
+
+    {{#if name}}
+        <div>Новостной источник: {{name}}</div>
+    {{/if}}
+
+    <ul>
+        {{#each data}}
+        <h3>{{this.title}}</h3>
+        <p>{{this.text}}</p>
+        {{/each}}
+    </ul>
+        
