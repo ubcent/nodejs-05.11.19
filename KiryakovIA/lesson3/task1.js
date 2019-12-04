@@ -12,11 +12,8 @@ request({
         const strBody = iconv.decode(body, 'win1251');
         const $ = cheerio.load(strBody);
         
-        $('.sb-item__title').each((index) => {
-            // Не понимаю, почему не выводит текст элемента?
+        $('.sb-item__title').each(function(index) {
             console.log(`${index}: ${$(this).text()}`);
-            // А вот так работает
-            console.log($('.sb-item__title').eq(index).text());
         });
     };
 });
