@@ -3,6 +3,8 @@ const connect = require('./mongoCfg.js');
 const Task = require('./models/tasks');
 const consolidate = require('consolidate');
 const path = require('path');
+const cheerio = require('cheerio');
+const bodyParser = require('body-parser');
 
 const app = express();
 let taskList;
@@ -13,6 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(__dirname + '/node_modules/bootstrap/dist'));
 app.use(express.static(__dirname + '/node_modules/jquery/dist'));
+app.use(bodyParser.json());
 
 app.listen(3000, () => {
     console.log('Server has been started!');
@@ -20,7 +23,7 @@ app.listen(3000, () => {
 
 app.get('/', async (req, res) => {
     taskList = await Task.find({});
-    res.render('main', {taskList});
+    res.render('main', { taskList });
 });
 
 app.post('/addTask', async (req, res) => {
@@ -30,6 +33,11 @@ app.post('/addTask', async (req, res) => {
     });
     const savedTask = await task.save();
     taskList = await Task.find({});
-    res.render('main', {taskList});
+    res.render('main', { taskList });
 });
 
+app.post('/delTask', async (req, res) => {
+    const task = await Task.deleteMany({ _id: { $in: req.body.checkBoxTask } });
+    taskList = await Task.find({});
+    res.render('main', { taskList });
+});
