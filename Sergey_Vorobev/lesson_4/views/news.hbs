@@ -36,7 +36,11 @@
 {{#if news }}
   <ul>
     {{#each news}}
-      <li>{{this.text}}</li>
+      <li>
+        <p>{{this.date}}</p>
+        <p>{{this.text}}</p>
+        <a href="https://{{this.link}}">Подробнее...</a>
+      </li>
     {{/each}}
   </ul>
 {{/if}}

@@ -33,10 +33,10 @@ app.post('/', async (req, res) => {
                 news.set('date',($(item).find('.quote__header_date').text()));
                 news.set('text',($(item).find('.quote__body').text()));
         });
-        console.log(news);
-        /*res.render('news', {
+       // console.log(news);
+        res.render('news', {
             news
-        })*/
+        })
     } else {
         res.render('news', {
             err: 'Такой источник не поддерживается'

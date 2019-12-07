@@ -1,0 +1,17 @@
+{
+  "name": "lesson_5",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "consolidate": "^0.15.1",
+    "express": "^4.17.1",
+    "handlebars": "^4.5.3",
+    "mongoose": "^5.7.14"
+  }
+}
