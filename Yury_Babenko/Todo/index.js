@@ -42,15 +42,13 @@ app.delete('/api/task', async (req, res) => {
 })
 
 app.patch('/api/task', async (req, res) => {
-  const deletedTask = await Task.updateOne(
+  const updatedTask = await Task.updateOne(
     { _id: req.body.id },
-    { $set: {
-        completed: req.body.data.completed,
-      },
+    { $set: req.body.data,
     }
   );
 
-  res.json(deletedTask);
+  res.json(updatedTask);
 })
 
 app.listen(3000, () => {
