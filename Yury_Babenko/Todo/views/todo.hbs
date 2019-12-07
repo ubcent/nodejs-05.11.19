@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Todo list</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+  <h1>Список дел</h1>
+  <ul class="todo-list">
+    {{#each tasks}}
+    <li class="task-container" data-id="{{this._id}}">
+      <span class="task-title">{{this.title}}</span>
+      {{#if this.completed}}
+      <span class="task-status task-status_completed"></span>
+      {{else}}
+      <span class="task-status"></span>
+      {{/if}}
+      <a href="#" class="task-delete-btn">Удалить</a>
+      {{#unless this.completed}}
+      <a href="#" class="task-complete-btn">Пометить как выполненное</a>
+      {{/unless}}
+    </li>
+    {{/each}}
+  </ul>
+  <div>
+    <label for="add-task-input">Добавить дело</label>
+    <input class="add-task-input" id="add-task-input" type="text">
+    <button class="add-task-btn">Добавить</button>
+  </div>
+
+  <template id="task-template">
+    <li class="task-container">
+      <span class="task-title"></span>
+      <span class="task-status"></span>
+      <a href="#" class="task-delete-btn">Удалить</a>
+      <span>Новое</span>
+    </li>
+  </template>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
