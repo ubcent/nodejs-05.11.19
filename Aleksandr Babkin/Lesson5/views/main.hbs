@@ -1,0 +1,66 @@
+<script language="javascript" src="jquery.min.js"></script>
+<script language="javascript" src="js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="css/bootstrap.min.css" />
+
+<div class="container">
+    <h1 class="text-center mt-2">ToDo List</h1>
+
+    <form method="POST" action="/addTask">
+        <div class="form-group row">
+            <label for="inputTask" class="col-sm-2 col-form-label">Enter task</label>
+            <div class="col-sm-10">
+                <input type="text" name="inputTask" class="form-control" id="inputTask">
+            </div>
+        </div>
+        <fieldset class="form-group">
+            <div class="row">
+                <legend class="col-form-label col-sm-2 pt-0">Priority</legend>
+                <div class="col-sm-10">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="1"
+                            checked>
+                        <label class="form-check-label" for="gridRadios1">
+                            Very important
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="2">
+                        <label class="form-check-label" for="gridRadios2">
+                            Important
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios3" value="3">
+                        <label class="form-check-label" for="gridRadios3">
+                            Not important
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <div class="form-group row">
+            <div class="col-sm-10">
+                <button type="submit" class="btn btn-primary">Add task</button>
+            </div>
+        </div>
+    </form>
+
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                {{!-- <th scope="col">#</th> --}}
+                <th scope="col">Task</th>
+                <th scope="col">Priority</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each taskList}}
+            <tr>
+                {{!-- <th scope="row">{{this.indexOf()}}</th> --}}
+                <td>{{this.title}}</td>
+                <td>{{this.priorityTask}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>

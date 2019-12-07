@@ -1,0 +1,22 @@
+{
+  "name": "Lesson5",
+  "version": "1.0.0",
+  "description": "",
+  "main": "express.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^4.4.1",
+    "consolidate": "^0.15.1",
+    "express": "^4.17.1",
+    "handlebars": "^4.5.3",
+    "jquery": "^3.4.1",
+    "mongoose": "^5.7.14",
+    "popper": "^1.0.1",
+    "popper.js": "^1.16.0"
+  }
+}
