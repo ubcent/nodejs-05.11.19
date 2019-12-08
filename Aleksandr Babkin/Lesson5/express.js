@@ -7,7 +7,7 @@ const cheerio = require('cheerio');
 // const bodyParser = require('body-parser');
 
 const app = express();
-let taskList;
+
 app.engine('hbs', consolidate.handlebars);
 app.set('view engine', 'hbs');
 app.set('views', path.resolve(__dirname, 'views'));
@@ -22,16 +22,14 @@ app.listen(3000, () => {
 });
 
 app.get('/', async (req, res) => {
-    taskList = await Task.find({});
+    const taskList = await Task.find({});
     res.render('main', { taskList });
 });
 
-app.get('/getTask', async (req, res) => {
-    console.dir(req.body);
-    getTask = await Task.find({_id: req.body.editTaskButton});
-    // taskList = await Task.find({});
-    // res.render('main', { taskList });
-    res.render('modal', { getTask });
+app.post('/getTask', async (req, res) => {
+    const getTask = await Task.find({_id: req.body.editTaskButton});
+    console.log(getTask);
+    res.render('editTask', { getTask });
 });
 
 app.post('/addTask', async (req, res) => {
@@ -44,7 +42,16 @@ app.post('/addTask', async (req, res) => {
 });
 
 app.post('/delTask', async (req, res) => {
-    console.dir(JSON.stringify(req.body));
     const task = await Task.deleteMany({ _id: { $in: req.body.checkBoxTask } });
     res.redirect('/');
 });
+
+app.get('/home', async(req,res) => {
+    res.redirect('/');
+});
+
+app.post('/editTask', async (req,res) =>{
+    console.log(req.body);
+    const task = await Task.updateMany({_id: req.body.idTask}, {$set: {title: req.body.inputEditTask, priorityTask: req.body.gridRadios}});
+    res.redirect('/');
+})
