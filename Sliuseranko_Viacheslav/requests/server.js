@@ -104,7 +104,8 @@ const server = createServer( (req, res) =>
 ).listen(PORT);
 
 /**  просто подсказка что сервер запустился, и на каком порту */
-app.listen( 3000, () => console.log(
-    clc.yellow(`==================== Server start ====================\n`),
-    clc.green(`\t${ SERVER_URL }:${ PORT }`)
+server.on( 'listening' , () => console.log([
+        clc.yellow(`==================== Server start ====================`),
+        clc.green(`\t${ SERVER_URL }:${ PORT }`)
+    ].join('\n')
 ));
