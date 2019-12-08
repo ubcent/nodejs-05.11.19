@@ -12,6 +12,7 @@
     "consolidate": "^0.15.1",
     "express": "^4.17.1",
     "handlebars": "^4.5.3",
-    "mongoose": "^5.7.14"
+    "mongoose": "^5.7.14",
+    "url-parse": "^1.4.7"
   }
 }

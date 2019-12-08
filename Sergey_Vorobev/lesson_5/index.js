@@ -28,13 +28,23 @@ app.get('/', async (req, res) =>{
 
 });
 
-app.get('newTask', (req, res) => {
+app.get('/newTask', (req, res) => {
     res.render('newTask');
+});
+
+app.get('/del', async (req, res) => {
+    const idTask = req.query.id;
+    await Task.remove({'_id': idTask});
+    const tasks = await Task.find();
+    res.render('index',{
+        delete: 'Задача удалена',
+        tasks
+    });
 });
 
 app.post('/', async (req, res) => {
     const task = new Task(req.body);
-    const saveTask = await task.save();
+    await task.save();
     const tasks = await Task.find();
 
     res.render('index', {

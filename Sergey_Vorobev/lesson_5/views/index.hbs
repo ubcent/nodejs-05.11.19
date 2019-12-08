@@ -11,6 +11,14 @@
 </head>
 <body>
 
+{{#if saved}}
+    <p style="color: green">{{saved}}</p>
+{{/if}}
+
+{{#if delete}}
+    <p style="color: red">{{delete}}</p>
+{{/if}}
+
 <h2>Список дел!</h2>
 
 <ul class="list-group">
@@ -22,7 +30,7 @@
                 {{#if this.description}}
                     <p>Описание: {{this.description}}</p>
                 {{/if}}
-                <a href="del">Удалить</a>
+                <a href="del?id={{this._id}}">Удалить</a>
                 <a href="#">Редактировать</a>
             </li>
         {{/each}}
