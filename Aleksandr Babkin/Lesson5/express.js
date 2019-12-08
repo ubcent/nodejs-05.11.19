@@ -3,11 +3,8 @@ const connect = require('./mongoCfg.js');
 const Task = require('./models/tasks');
 const consolidate = require('consolidate');
 const path = require('path');
-const cheerio = require('cheerio');
-// const bodyParser = require('body-parser');
 
 const app = express();
-
 app.engine('hbs', consolidate.handlebars);
 app.set('view engine', 'hbs');
 app.set('views', path.resolve(__dirname, 'views'));
@@ -15,7 +12,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(__dirname + '/node_modules/bootstrap/dist'));
 app.use(express.static(__dirname + '/node_modules/jquery/dist'));
-// app.use(bodyParser.json());
 
 app.listen(3000, () => {
     console.log('Server has been started!');
@@ -27,8 +23,7 @@ app.get('/', async (req, res) => {
 });
 
 app.post('/getTask', async (req, res) => {
-    const getTask = await Task.find({_id: req.body.editTaskButton});
-    console.log(getTask);
+    const getTask = await Task.find({ _id: req.body.editTaskButton });
     res.render('editTask', { getTask });
 });
 
@@ -46,12 +41,11 @@ app.post('/delTask', async (req, res) => {
     res.redirect('/');
 });
 
-app.get('/home', async(req,res) => {
+app.get('/home', async (req, res) => {
     res.redirect('/');
 });
 
-app.post('/editTask', async (req,res) =>{
-    console.log(req.body);
-    const task = await Task.updateMany({_id: req.body.idTask}, {$set: {title: req.body.inputEditTask, priorityTask: req.body.gridRadios}});
+app.post('/editTask', async (req, res) => {
+    const task = await Task.updateMany({ _id: req.body.idTask }, { $set: { title: req.body.inputEditTask, priorityTask: req.body.gridRadios } });
     res.redirect('/');
 })
