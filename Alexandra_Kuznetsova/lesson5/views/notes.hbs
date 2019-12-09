@@ -1,0 +1,28 @@
+<form method='POST' action='/tasks'>
+    <input type='text' name='title' placeholder='Тема заметки' required />
+    <input type='text' name='body' placeholder='Текст заметки' required />
+    <input type='submit' />
+</form>
+
+<form method='GET' action='/tasks'>
+    <input type='text' name='name' placeholder='Тема заметки' required />
+    <input type='submit' value='Найти' />
+</form>
+
+<h3>{{title}}</h3>
+<p>{{body}}</p>
+<p hidden='true'>{{_id}}</p>
+<p>{{message}}</p>
+
+{{#if title}}
+    <form method='POST' action='/put'>
+        <input type='hidden' name='id' value='{{_id}}' readonly />
+        <input name='title' placeholder='Новая тема заметки' required />
+        <input name='body' placeholder='Новый текст' required />
+        <input type='submit' value='Редактировать' />
+    </form>
+    <form method='GET' action='/delete'>
+        <input name='name' value='{{title}}' readonly />
+        <input type='submit' value='Удалить' />
+    </form>
+{{/if}}
