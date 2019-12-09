@@ -29,6 +29,7 @@ app.get('/', async (req, res) =>{
 });
 
 app.get('/newTask', (req, res) => {
+
     res.render('newTask');
 });
 
@@ -40,6 +41,27 @@ app.get('/del', async (req, res) => {
         delete: 'Задача удалена',
         tasks
     });
+});
+
+app.get('/edit', async (req, res) => {
+    const idTask = req.query.id;
+    const task = await Task.find({'_id': idTask});
+    res.render('edit', {
+        task
+    })
+});
+
+app.post('/edit', async (req, res) => {
+    await Task.update({'_id': req.body.id}, {'title': req.body.title, 'description': req.body.description}, {upsert: true}, (err) => {
+        if (err){
+            throw err;
+        }
+    });
+    const tasks = await Task.find();
+    res.render('index', {
+        updated: 'Задача обновлена',
+        tasks
+    })
 });
 
 app.post('/', async (req, res) => {

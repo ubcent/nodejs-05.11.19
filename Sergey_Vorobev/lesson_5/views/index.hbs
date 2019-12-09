@@ -19,19 +19,23 @@
     <p style="color: red">{{delete}}</p>
 {{/if}}
 
+{{#if updated}}
+    <p style="color: green">{{updated}}</p>
+{{/if}}
+
 <h2>Список дел!</h2>
 
 <ul class="list-group">
     {{#if tasks}}
         {{#each tasks}}
             <li class="list-group-item" id="{{this._id}}">
-                <input type="checkbox" class="form-check-input" id="completed">
+                <input type="checkbox" class="form-check-input checkbox"  id="completed">
                 <h5>{{this.title}}</h5>
                 {{#if this.description}}
                     <p>Описание: {{this.description}}</p>
                 {{/if}}
                 <a href="del?id={{this._id}}">Удалить</a>
-                <a href="#">Редактировать</a>
+                <a href="edit?id={{this._id}}">Редактировать</a>
             </li>
         {{/each}}
     {{/if}}
