@@ -1,6 +1,12 @@
 const express = require('express');
 const consolidate = require('consolidate');
 const path = require('path');
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost:32772/tasks', { useNewUrlParser: true, useUnifiedTopology: true });
+
+const Task = require('./models/task');
+const config = require('./config.json');
 
 const app = express();
 
@@ -38,6 +44,19 @@ app.use('/users', (req, res, next) => {
   console.log('middleware2');
   next();
 });
+
+app.get('/tasks', async (req, res) => {
+  const tasks = await Task.find({});
+
+  res.json(tasks);
+});
+
+app.post('/tasks', async (req, res) => {
+  const task = new Task(req.body);
+  const savedTask = await task.save();
+
+  res.json(savedTask);
+}); 
 
 app.all('/users', (req, res, next) => {
   console.log('all');
