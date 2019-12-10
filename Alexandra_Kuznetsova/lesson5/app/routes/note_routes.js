@@ -11,7 +11,30 @@ module.exports = function(app, db) {
     });
     try {
       let data = JSON.parse(JSON.stringify(tasks[0]));
-      res.render('notes', data);
+
+      function getBodyTask(param, mes) {
+        if (param === true) {
+          return mes;
+        } else {
+          return '';
+        }
+      }
+      const mesCompleted = getBodyTask(data.completed, 'Задача завершена');
+      const mesPriority = getBodyTask(data.priority, 'Задача в приоритете');
+      
+      let obj = {
+        _id: data._id,
+        title: data.title,
+        body: data.body,
+        date: data.date,
+        completed: data.completed,
+        priority: data.priority,
+        messageC: mesCompleted,
+        messageP: mesPriority,
+        __v: data.__v
+      }
+      
+      res.render('notes', obj);
     } catch (e) {
       let message = { message: 'У вас нет такой заметки :(' };
       res.render('notes', JSON.parse(JSON.stringify(message)));
@@ -40,7 +63,18 @@ module.exports = function(app, db) {
     const id = req.body.id;
     const newTitle = req.body.title;
     const newBody = req.body.body;
-    const newTask = {title: newTitle, body: newBody};
+  
+    function getStatus(param) {
+      if ( param === 'on' ) {
+        return param = true;
+      } else {
+        return param = false;
+      }
+    }
+    
+    const newPriority = getStatus(req.body.priority);
+    const newCompleted = getStatus(req.body.completed);
+    const newTask = {title: newTitle, body: newBody, priority: newPriority, completed: newCompleted};
 
     const tasks = await Task.updateOne({
       _id: id},
@@ -49,6 +83,6 @@ module.exports = function(app, db) {
     });
     let message = { message: 'Данные успешно обновлены' };
     res.render('notes', JSON.parse(JSON.stringify(message)));
-  });
+   });
 
 }
