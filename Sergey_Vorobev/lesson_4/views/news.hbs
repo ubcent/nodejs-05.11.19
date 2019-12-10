@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Новости</title>
+</head>
+<body>
+
+<h3>Новости</h3>
+
+<form action="/" method="post">
+
+    <label>
+        <input type="number" placeholder="количество новостей" value="10" name="count">
+    </label>
+    </br>
+    </br>
+    <label>
+        <select name="source">
+            <option value="yandexNews">Яндекс новости</option>
+            <option value="bash">bash.org</option>
+        </select>
+    </label>
+    </br>
+    </br>
+    <input type="submit" value="Отправить">
+</form>
+
+{{#if err}}
+  <h4 style="color:red">{{err}}</h4>
+{{/if}}
+
+{{#if news }}
+  <ul>
+    {{#each news}}
+      <li>
+        <p>{{this.date}}</p>
+        <p>{{this.text}}</p>
+        <a href="https://{{this.link}}">Подробнее...</a>
+      </li>
+    {{/each}}
+  </ul>
+{{/if}}
+
+</body>
+</html>
