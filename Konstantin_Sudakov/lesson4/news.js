@@ -18,19 +18,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
 
-// функция с промисом. принимает адрес сайта
-const getNews = (url) => {
-  return promiseNews = new Promise((resolve, reject) => {
-    request(url, (err, res, body) => {
-      if (!err && res.statusCode === 200) {
-        resolve(body);
-      } else {
-        reject(err);
-      }
-    });
-  });
-};
-
 app.get('/', (req, res) => {
   res.render('newspaper');
 });
@@ -55,9 +42,16 @@ app.post('/getnews', (req, res) => {
   } else {
     newsCount = req.body.count;
   }
-  // вызываю промис
-  getNews(url);
-  // обрабатываю результаты промиса
+  //промис перенес в сам запрос
+  promiseNews = new Promise((resolve, reject) => {
+    request(url, (err, res, body) => {
+      if (!err && res.statusCode === 200) {
+        resolve(body);
+      } else {
+        reject(err);
+      }
+    });
+  });
   promiseNews
     .then(
       (body) => {
@@ -72,6 +66,7 @@ app.post('/getnews', (req, res) => {
     .catch(
       (err) => console.log(clc.red('Упс...что-то пошло не так \n' + err))
     );
+
 });
 
 app.listen(3000, () => {
