@@ -1,0 +1,16 @@
+.task-title {
+  font-weight: bold;
+}
+.task-status {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 15px;
+  background: #ff6d6d;
+}
+.task-status_completed {
+  background: #156d15;
+}
+.task-delete-btn {
+  cursor: pointer;
+}

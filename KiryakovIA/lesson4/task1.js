@@ -28,16 +28,14 @@ app.post('/settings', (req, res) => {
             const strBody = iconv.decode(body, 'win1251');
             const $ = cheerio.load(strBody);
             const news = [];
-            
-            $('.sb-item__title').each(function(index) {
-                news.push($(this).text());
-                if (req.body.count && index === req.body.count - 1){
-                    return false;
-                }
-            });
+            if (req.body.count > 0) {
+                $('.sb-item__title').each(function(index) {
+                    news.push($(this).text());
+                });
+                news.splice(req.body.count);
+            }
             res.render('news', { news });
-        }
-        else{
+        } else {
             res.render('news', { error: 'Ошибка при получении новостей.'});
         }
     });
