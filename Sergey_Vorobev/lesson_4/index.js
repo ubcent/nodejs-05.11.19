@@ -19,32 +19,53 @@ app.get('/', (reg, res) => {
 });
 
 app.post('/', async (req, res) => {
-    const {count = 10, source = yandexNews} = req.body;
 
-    if (source === 'yandexNews') {
+    if (res.statusCode === 200) {
+        const {count = 10, source = yandexNews} = req.body;
 
-    } else if (source === 'bash') {
-        const body  = await requestPromise('https://bash.im');
-        const $ = cheerio.load(body);
-        const news = new Map();
-        const quote = $('.quote__frame');
-        quote.each((i, item) => {
-                news.set('link',($(item).find('.quote__header_permalink').attr('href')));
-                news.set('date',($(item).find('.quote__header_date').text()));
-                news.set('text',($(item).find('.quote__body').text()));
-        });
-       // console.log(news);
-        res.render('news', {
-            news
-        })
-    } else {
-        res.render('news', {
-            err: 'Такой источник не поддерживается'
-        });
+        if (source === 'yandexNews') {
+            const body = await requestPromise('https://yandex.ru/news');
+            const $ = cheerio.load(body);
+            const newsFull = [];
+            const stories = $('.stories-set__item');
+            stories.each((i, item) => {
+               newsFull.push({
+                   'date': $(item).find('.story__date').text(),
+                   'text': $(item).find('.link').text(),
+               });
+
+            });
+            const news = newsFull.slice(0, count);
+            res.render('news', {
+                news
+            })
+
+        } else if (source === 'bash') {
+            const body = await requestPromise('https://bash.im');
+            const $ = cheerio.load(body);
+            const newsFull = [];
+            const quote = $('.quote__frame');
+            quote.each((i, item) => {
+                newsFull.push({
+                    'link': 'bash.im' + $(item).find('.quote__header_permalink').attr('href'),
+                    'date': $(item).find('.quote__header_date').text(),
+                    'text': $(item).find('.quote__body').text()
+                });
+            });
+            const  news = newsFull.slice(0, count);
+            //console.log(news);
+            res.render('news', {
+                news
+            })
+        } else {
+            res.render('news', {
+                err: 'Такой источник не поддерживается'
+            });
+        }
     }
 });
 
 
-app.listen(3030, () => {
-    console.log('Сервер запущен');
+app.listen(3000, () => {
+    console.log('Сервер запущен на 3000');
 });

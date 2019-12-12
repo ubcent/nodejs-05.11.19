@@ -39,7 +39,9 @@
       <li>
         <p>{{this.date}}</p>
         <p>{{this.text}}</p>
+          {{#if this.link}}
         <a href="https://{{this.link}}">Подробнее...</a>
+          {{/if}}
       </li>
     {{/each}}
   </ul>
