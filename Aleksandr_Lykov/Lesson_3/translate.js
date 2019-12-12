@@ -1,6 +1,7 @@
 const sRequest = require('request-promise')
 const inquirer = require('inquirer')
 
+console.log('\nWelcome to simple translator!\n')
 let questions = [
     {
         type: 'input',
