@@ -1,0 +1,34 @@
+
+<form action="/jobs" method="POST">
+
+  <select name="source">
+    <option value="hh" selected="selected">HeadHunter</option>
+    <option value="mk">Мой Круг</option>
+  </select><br />
+
+  <select name="city">
+    <option value="moscow" selected="selected">Москва</option>
+    <option value="petersburg">Санкт-Петербург</option>
+  </select><br />
+
+  <select name="technology">
+    <option value="node" selected="selected">Node.js</option>
+    <option value="react">React.js</option>
+  </select><br />
+
+  <input type="number" placeholder="Количество вакансий" value="10" name="amount" /><br />
+  <input type="submit" value="Отправить" />
+  
+</form>
+
+{{#if err}}
+  <h3>{{err}}</h3>
+{{/if}}
+
+{{#if jobs}}
+  <ul>
+    {{#each jobs}}
+      <li>{{this}}</li>
+    {{/each}}
+  </ul>
+{{/if}}
