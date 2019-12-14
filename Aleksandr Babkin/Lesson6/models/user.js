@@ -3,7 +3,7 @@ const bcryptjs = require('bcryptjs');
 
 const Schema = mongoose.Schema;
 
-const SALT_ROUND = 12;
+const SALT_ROUNDS = 12;
 
 const userSchema = new Schema({
     email: { type: String, required: true },
@@ -12,16 +12,16 @@ const userSchema = new Schema({
     password: { type: String, required: true },
 });
 
-userSchema.pre('save', (next) => {
-    if (this.isModified('password')) {
-        const salt = bcryptjs.genSaltSync(SALT_ROUND);
-        this.password = bcryptjs.hashSync(this.password, salt);
+userSchema.pre('save', function(next) {
+    if(this.isModified('password')) {
+        const salt = bcryptjs.genSaltSync(SALT_ROUNDS);
+        this.password = bcryptjs.hashSync(this.password, salt)
     }
     next();
 });
 
-userSchema.methods.validatePassword = (candidate) => {
-    return bcryptjs.compareSync(candidate, this.password)
+userSchema.methods.validatePassword = function(candidate) {
+    return bcryptjs.compareSync(candidate, this.password);
 }
 
 module.exports = mongoose.model('User', userSchema, 'users');

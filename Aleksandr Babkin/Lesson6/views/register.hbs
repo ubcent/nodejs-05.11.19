@@ -7,22 +7,22 @@
     <h1 class="text-center mt-2">Регистрация</h1>
     <form>
         <div class="form-group">
-            <input type="email" class="form-control" id="inputEmail" name="emailRegister" aria-describedby="emailHelp"
+            <input type="email" name="email" class="form-control" id="inputEmail" aria-describedby="emailHelp"
                 placeholder="Email">
         </div>
         <div class="form-row form-group">
             <div class="col">
-                <input type="text" class="form-control" placeholder="Имя" name="firstName">
+                <input type="text" name="firstName" class="form-control" placeholder="Имя">
             </div>
             <div class="col">
-                <input type="text" class="form-control" placeholder="Фамилия" name="lastName">
+                <input type="text" name="lastName" class="form-control" placeholder="Фамилия">
             </div>
         </div>
         <div class="form-group">
-            <input type="password" class="form-control" id="inputPassword" placeholder="Пароль" name="password">
+            <input type="password" name="password" class="form-control" id="inputPassword" placeholder="Пароль">
         </div>
         <div class="form-group">
-            <input type="password" class="form-control" id="inputRePassword" name="rePassword"
+            <input type="password" name="repassword" class="form-control" id="inputRePassword"
                 placeholder="Повторить пароль">
         </div>
         <button type="submit" formaction="/register" formmethod="POST" class="btn btn-primary">Зарегистрировать</button>

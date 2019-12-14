@@ -25,7 +25,7 @@ app.use(session({
 }));
 app.use(passport.initialize);
 app.use(passport.session);
-app.use('/main', passport.mustBeAuthenticated);
+app.use('/task', passport.mustBeAuthenticated);
 
 app.listen(3000, () => {
     console.log('Server has been started!');
@@ -45,10 +45,11 @@ app.get('/auth', (req, res) => {
     res.render('auth', {error});
 });
 
-app.post('/register', async (res, req) => {
-    const { rePassword, ...restBody } = req.body;
+app.post('/register', async (req, res) => {
+    console.log(req.body);
+    const { repassword, ...restBody } = req.body;
 
-    if (user.password === rePassword) {
+    if (restBody.password === repassword) {
         const user = new User(restBody);
         await user.save();
         res.redirect('/auth');
@@ -59,10 +60,15 @@ app.post('/register', async (res, req) => {
 
 app.post('/auth', passport.authenticate);
 
-app.get('/', async (req, res) => {
+app.get('/task', async (req, res) => {
     const taskList = await Task.find({});
     res.render('main', { taskList });
 });
+
+app.get('/', async (req, res) => {
+    res.redirect('/task')
+});
+
 
 app.post('/getTask', async (req, res) => {
     const getTask = await Task.find({ _id: req.body.editTaskButton });

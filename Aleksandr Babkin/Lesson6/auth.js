@@ -3,8 +3,8 @@ const Strategy = require('passport-local').Strategy;
 const User = require('./models/user');
 
 passport.use(
-    new Strategy({ usernameField: 'emailRegister' }, async (username, password, done) => {
-        const user = await User.findOne({ emailRegister: username });
+    new Strategy({ usernameField: 'email' }, async (username, password, done) => {
+        const user = await User.findOne({ email: username });
         if (!username) {
             return done(null, false);
         }
@@ -15,7 +15,7 @@ passport.use(
 
         const plainUser = JSON.parse(JSON.stringify(user));
         delete plainUser.password;
-        done(nul, plainUser);
+        done(null, plainUser);
     }),
 );
 
@@ -34,7 +34,7 @@ module.exports = {
     initialize: passport.initialize(),
     session: passport.session(),
     authenticate: passport.authenticate('local', {
-        successRedirect: '/main',
+        successRedirect: '/',
         failureRedirect: '/auth?error=1'
     }),
 
