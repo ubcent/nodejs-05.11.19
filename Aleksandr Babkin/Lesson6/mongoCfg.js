@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const MONGO_HOST = 'localhost';
-const MONGO_PORT = '32773';
-const MONGO_DB = 'tasksbabkin';
+const MONGO_PORT = '32768';
+const MONGO_DB = 'TaskBabkin';
 
 const url = `mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}`;
 

@@ -1,8 +1,13 @@
 const express = require('express');
-const connect = require('./mongoCfg.js.js');
+const connect = require('./mongoCfg');
 const Task = require('./models/tasks');
+const User = require('./models/user');
 const consolidate = require('consolidate');
 const path = require('path');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+const mongoose = require('mongoose');
+const passport = require('./auth')
 
 const app = express();
 app.engine('hbs', consolidate.handlebars);
@@ -12,10 +17,47 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(__dirname + '/node_modules/bootstrap/dist'));
 app.use(express.static(__dirname + '/node_modules/jquery/dist'));
+app.use(session({
+    resave: true,
+    saveUninitialized: false,
+    secret: 'super secret phrase',
+    store: new MongoStore({mongooseConnection: mongoose.connection}),
+}));
+app.use(passport.initialize);
+app.use(passport.session);
+app.use('/main', passport.mustBeAuthenticated);
 
 app.listen(3000, () => {
     console.log('Server has been started!');
 });
+
+app.get('/register', (req, res) => {
+    res.render('register');
+});
+
+app.get ('/logout', (req, res) => {
+    req.logout();
+    res.redirect('/auth');
+});
+
+app.get('/auth', (req, res) => {
+    const {error} = req.query;
+    res.render('auth', {error});
+});
+
+app.post('/register', async (res, req) => {
+    const { rePassword, ...restBody } = req.body;
+
+    if (user.password === rePassword) {
+        const user = new User(restBody);
+        await user.save();
+        res.redirect('/auth');
+    } else {
+        res.redirect('/register?err=repass');
+    }
+});
+
+app.post('/auth', passport.authenticate);
 
 app.get('/', async (req, res) => {
     const taskList = await Task.find({});
@@ -32,12 +74,12 @@ app.post('/addTask', async (req, res) => {
         title: req.body.inputTask,
         priorityTask: req.body.gridRadios
     });
-    const savedTask = await task.save();
+    await task.save();
     res.redirect('/');
 });
 
 app.post('/delTask', async (req, res) => {
-    const task = await Task.deleteMany({ _id: { $in: req.body.checkBoxTask } });
+    await Task.deleteMany({ _id: { $in: req.body.checkBoxTask } });
     res.redirect('/');
 });
 
@@ -46,6 +88,6 @@ app.get('/home', async (req, res) => {
 });
 
 app.post('/editTask', async (req, res) => {
-    const task = await Task.updateMany({ _id: req.body.idTask }, { $set: { title: req.body.inputEditTask, priorityTask: req.body.gridRadios } });
+    await Task.updateMany({ _id: req.body.idTask }, { $set: { title: req.body.inputEditTask, priorityTask: req.body.gridRadios } });
     res.redirect('/');
 })

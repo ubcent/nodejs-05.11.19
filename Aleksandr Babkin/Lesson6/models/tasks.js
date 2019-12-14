@@ -7,4 +7,4 @@ const taskSchema = new Schema({
     priorityTask: {type: String, required: true}
 });
 
-module.exports = mongoose.model('TaskBabkin', taskSchema, 'tasksbabkin');
+module.exports = mongoose.model('TaskBabkin', taskSchema, 'tasks');

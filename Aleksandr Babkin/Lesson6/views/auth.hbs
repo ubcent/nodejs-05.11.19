@@ -1,0 +1,23 @@
+<script language="javascript" src="jquery.min.js"></script>
+<script language="javascript" src="js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="css/bootstrap.min.css" />
+<title>ToDo Register!</title>
+
+<div class="container">
+    <h1 class="text-center mt-2">Аутентификация</h1>
+    {{#if error}}
+    <b>Неправльный логин или пароль</b>
+    {{/if}}
+    {{#unless error}}
+    <form>
+        <div class="form-group">
+            <input type="email" class="form-control" id="inputEmail" name="email" aria-describedby="emailHelp"
+                placeholder="Email">
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" id="inputPassword" placeholder="Пароль" name="password">
+        </div>
+        <button type="submit" formaction="/auth" formmethod="POST" class="btn btn-primary">Войти</button>
+    </form>
+    {{/unless}}
+</div>

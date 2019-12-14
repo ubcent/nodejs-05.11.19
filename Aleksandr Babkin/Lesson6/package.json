@@ -10,11 +10,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "bootstrap": "^4.4.1",
+    "connect-mongo": "^3.2.0",
     "consolidate": "^0.15.1",
     "express": "^4.17.1",
+    "express-session": "^1.17.0",
     "handlebars": "^4.5.3",
     "jquery": "^3.4.1",
-    "mongoose": "^5.7.14"
+    "mongoose": "^5.7.14",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "popper.js": "^1.16.0"
   }
 }
