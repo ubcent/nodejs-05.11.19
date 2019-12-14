@@ -1,0 +1,52 @@
+<script language="javascript" src="jquery.min.js"></script>
+<script language="javascript" src="js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="css/bootstrap.min.css" />
+<title>ToDo!</title>
+
+<div class="container">
+    <h1 class="text-center mt-2">ToDo List</h1>
+
+    <form>
+        <fieldset class="form-group">
+            <div class="form-row align-items-center">
+                <div class="form-check ml-2">
+                    <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="Очень важно"
+                        checked>
+                    <label class="form-check-label" for="gridRadios1">
+                        Очень важно
+                    </label>
+                </div>
+                <div class="form-check ml-2">
+                    <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="Важно">
+                    <label class="form-check-label" for="gridRadios2">
+                        Важно
+                    </label>
+                </div>
+                <div class="form-check ml-2">
+                    <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios3" value="Не важно">
+                    <label class="form-check-label" for="gridRadios3">
+                        Не важно
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="form-row align-items-center">
+            <div class="flex-fill">
+                {{#each getTask}}
+                <label class="sr-only" for="inlineFormInput">Name</label>
+                <input type="hidden" name="idTask" value="{{this._id}}">
+                <input required type="text" class="form-control mb-2" name="inputEditTask" id="inputEditTask"
+                    value="{{this.title}}">
+                {{/each}}
+            </div>
+            <div class="col-auto">
+                <button type="submit" formaction="/editTask" formmethod="POST"
+                    class="btn btn-primary mb-2">Изменить</button>
+            </div>
+            <div class="col-auto">
+                <button type="submit" formmethod="GET" formaction="/home" class="btn btn-primary mb-2">Выход</button>
+            </div>
+        </div>
+    </form>
+</div>
