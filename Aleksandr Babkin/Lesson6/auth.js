@@ -34,8 +34,8 @@ module.exports = {
     initialize: passport.initialize(),
     session: passport.session(),
     authenticate: passport.authenticate('local', {
-        successRedirect: '/',
-        failureRedirect: '/auth?error=1'
+        successRedirect: '/task',
+        failureRedirect: '/home?error=1'
     }),
 
     mustBeAuthenticated: (req, res, next) => {

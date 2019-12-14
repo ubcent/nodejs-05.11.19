@@ -1,6 +1,6 @@
 const express = require('express');
 const connect = require('./mongoCfg');
-const Task = require('./models/tasks');
+const Task = require('./models/task');
 const User = require('./models/user');
 const consolidate = require('consolidate');
 const path = require('path');
@@ -31,18 +31,39 @@ app.listen(3000, () => {
     console.log('Server has been started!');
 });
 
-app.get('/register', (req, res) => {
+//маршрутизация
+
+app.get('/', async (req, res) => {
+    res.redirect('/home')
+});
+
+app.get('/home', async (req, res) => {
     res.render('register');
 });
 
 app.get ('/logout', (req, res) => {
     req.logout();
-    res.redirect('/auth');
+    res.redirect('/home');
 });
+
+// app.get('/register', (req, res) => {
+//     res.render('register');
+// });
+
+app.post('/auth', passport.authenticate);
 
 app.get('/auth', (req, res) => {
     const {error} = req.query;
     res.render('auth', {error});
+});
+
+app.post('/addTask', async (req, res) => {
+    const task = new Task({
+        title: req.body.inputTask,
+        priorityTask: req.body.gridRadios
+    });
+    await task.save();
+    res.redirect('/task');
 });
 
 app.post('/register', async (req, res) => {
@@ -52,41 +73,25 @@ app.post('/register', async (req, res) => {
     if (restBody.password === repassword) {
         const user = new User(restBody);
         await user.save();
-        res.redirect('/auth');
+        res.redirect('/home');
     } else {
-        res.redirect('/register?err=repass');
+        res.redirect('/home?err=repass');
     }
 });
-
-app.post('/auth', passport.authenticate);
 
 app.get('/task', async (req, res) => {
     const taskList = await Task.find({});
     res.render('main', { taskList });
 });
 
-app.get('/', async (req, res) => {
-    res.redirect('/task')
-});
-
-
 app.post('/getTask', async (req, res) => {
     const getTask = await Task.find({ _id: req.body.editTaskButton });
     res.render('editTask', { getTask });
 });
 
-app.post('/addTask', async (req, res) => {
-    const task = new Task({
-        title: req.body.inputTask,
-        priorityTask: req.body.gridRadios
-    });
-    await task.save();
-    res.redirect('/');
-});
-
 app.post('/delTask', async (req, res) => {
     await Task.deleteMany({ _id: { $in: req.body.checkBoxTask } });
-    res.redirect('/');
+    res.redirect('/task');
 });
 
 app.get('/home', async (req, res) => {
@@ -95,5 +100,5 @@ app.get('/home', async (req, res) => {
 
 app.post('/editTask', async (req, res) => {
     await Task.updateMany({ _id: req.body.idTask }, { $set: { title: req.body.inputEditTask, priorityTask: req.body.gridRadios } });
-    res.redirect('/');
+    res.redirect('/task');
 })

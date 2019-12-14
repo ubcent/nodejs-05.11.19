@@ -12,6 +12,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "bootstrap": "^4.4.1",
+    "bootstrap-icons": "^1.0.0-alpha",
     "connect-mongo": "^3.2.0",
     "consolidate": "^0.15.1",
     "express": "^4.17.1",
