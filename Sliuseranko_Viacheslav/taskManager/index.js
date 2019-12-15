@@ -4,6 +4,8 @@ const consolidate = require('consolidate');
 const path = require('path');
 const mongoose = require('mongoose');
 const handlebars = require('handlebars');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 
 /** порт нашего приложения */
 const PORT = 3000;
@@ -11,8 +13,11 @@ const PORT = 3000;
 const SERVER_URL = 'http://localhost';
 
 mongoose.connect('mongodb://192.168.99.100:32768/tasks', { useNewUrlParser: true, useUnifiedTopology: true });
+const passport = require('./auth');
 
 const Task = require('./models/Task');
+const User = require('./models/User');
+
 const app = express();
 
 app.engine( 'hbs', consolidate.handlebars );
@@ -24,6 +29,17 @@ app.use( express.static( `${ __dirname }/views` ) );
 app.set( 'view engine', 'hbs' );
 app.set( 'views', path.resolve( __dirname, 'views') );
 
+app.use( session({
+    resave: true,
+    saveUninitialized: false,
+    secret: 'this is secret session key',
+    store: new MongoStore({ mongooseConnection: mongoose.connection })
+}));
+
+app.use( passport.initialize );
+app.use( passport.session );
+app.use('/tasks', passport.mustBeAuthenticated );
+
 /**
  * хелпер отрисовки чекбокса
  * @param task 
@@ -34,15 +50,39 @@ handlebars.registerHelper('checkBox', ({ _id, completed }) => {
     );
 });
 
+/** пути для навигационной панели у гостя */
+const guetsPaths = [
+    { title: 'login', url: '/login' },
+    { title: 'register', url: '/register' },
+];
+
+/** пути для навигационной панели у пользователя */
+const userPaths = [
+    { title: 'tasks', url: '/tasks' },
+    { title: 'logout', url: '/logout' },
+];
+
+/**
+ * хелпер отрисовки навигационной панели
+ * @param task 
+ **/
+handlebars.registerHelper('navpanel', ( user ) => {
+    const currentNavRoutes = ( user ? userPaths : guetsPaths );
+    const links = currentNavRoutes.map( ({ url, title }) => `<a href="${ url }">${ title }</a>&nbsp;`);
+    return new handlebars.SafeString(  links.join('') );
+});
+
 /** Получаем список всех задач */
 app.get('/tasks', async ( req, res ) => {
-    const tasks = await Task.find();
-    res.render( 'index', { tasks });
+    const { _id } = req.user;
+    const tasks = await Task.find({ user: _id });
+    res.render( 'index', { tasks, user: req.user });
 });
 
 /** создание новой задачи  */
 app.post('/tasks', async ( req, res ) => {
-    const task = new Task(req.body);  
+    const { _id } = req.user;
+    const task = new Task({ ...req.body, user: _id });  
     await task.validate( async (errors) => {
         if ( !errors ) {
             await task.save();
@@ -67,7 +107,7 @@ app.put('/tasks', async ( req, res ) => {
     try {
         const { body: { id } } = req;
         const task = await Task.findById(id );
-        task.completed = !task.completed;
+        task.set({ completed: !task.completed });
         task.save();
         res.send( task.completed );
     } catch( e ) {
@@ -79,7 +119,7 @@ app.put('/tasks', async ( req, res ) => {
 app.get('/tasks/update/:id', async ( req, res ) => {
     const { params: { id } } = req;
     const task = await Task.findById( id );
-    res.render( 'update', { task });
+    res.render( 'update', { task, user: req.user });
 });
 
 /** сохранение изменений */
@@ -98,6 +138,40 @@ app.post('/tasks/update/:id', async ( req, res ) => {
     });
 
     res.redirect( '/tasks');
+});
+
+app.get('/login', (req, res) => {
+    const { query: { error } } = req;
+    res.render( 'auth/login', { error, user: req.user } );
+});
+
+app.post( '/login', passport.authenticate );
+
+app.get('/logout', (req, res) => {
+    req.logout();
+    res.redirect('/login');
+});
+
+/** подключаем страницу регистрации */
+app.get('/register', ( req, res ) => {
+    res.render('auth/register', { user: req.user });
+});
+
+/** подключаем страницу регистрации */
+app.post('/register', async ( req, res ) => {
+    const { body: { repassword, ...userProps } } = req;
+    const user = new User( userProps );
+    const errors = user.validateSync();
+
+    if ( repassword !== userProps.password ) {
+        errors.push( { password: 'not mutch' } );
+    } 
+
+    if ( !errors ) {
+      await user.save();
+      return res.redirect('/login');
+    } 
+    res.redirect( '/register' );
 });
 
 app.listen( 3000, () => console.log(
