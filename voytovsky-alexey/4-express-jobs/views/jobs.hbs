@@ -1,34 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
 
-<form action="/jobs" method="POST">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
 
-  <select name="source">
-    <option value="hh" selected="selected">HeadHunter</option>
-    <option value="mk">Мой Круг</option>
-  </select><br />
+<body>
+  <form action="/jobs" method="POST">
+    <fieldset>
+      <legend>Поиск работы</legend>
 
-  <select name="city">
-    <option value="moscow" selected="selected">Москва</option>
-    <option value="petersburg">Санкт-Петербург</option>
-  </select><br />
+      <label for="source-choice">Ресурс:</label>
+      <select name="source" id="source-choice">
+        <option value="hh" selected="selected">hh</option>
+        <option value="hc">Хабр Карьера</option>
+      </select>
 
-  <select name="technology">
-    <option value="node" selected="selected">Node.js</option>
-    <option value="react">React.js</option>
-  </select><br />
+      <label for="city-choice">Город:</label>
+      <select name="city" id="city-choice">
+        <option value="moscow">Москва</option>
+        <option value="petersburg">Санкт-Петербург</option>
+      </select>
 
-  <input type="number" placeholder="Количество вакансий" value="10" name="amount" /><br />
-  <input type="submit" value="Отправить" />
-  
-</form>
+      <label for="technology-choice">Технология:</label>
+      <select name="technology" id="technology-choice">
+        <option value="node" selected="selected">Node.js</option>
+        <option value="react">React.js</option>
+      </select>
 
-{{#if err}}
-  <h3>{{err}}</h3>
-{{/if}}
+      <label for="jobs-amount">Количество вакансий:</label>
+      <input type="number" value="10" id="jobs-amount" name="amount" />
+      <input type="submit" value="найти">
+    
+    </fieldset>
+  </form>
 
-{{#if jobs}}
-  <ul>
-    {{#each jobs}}
-      <li>{{this}}</li>
-    {{/each}}
-  </ul>
-{{/if}}
+  {{#if err}}
+    <h3>{{err}}</h3>
+  {{/if}}
+
+  {{#if jobs}}
+    <ul>
+      {{#each jobs}}
+        <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  {{/if}}
+
+</body>
+</html>
