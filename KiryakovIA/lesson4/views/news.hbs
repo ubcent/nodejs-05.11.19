@@ -1,0 +1,15 @@
+<div>
+    <h2>Новости</h2>
+    <form method="POST" action="/settings">
+        <input type="text" name="count" placeholder="Количество новостей">
+        <input type="submit">
+    </form>
+    {{#if error}}
+    <h2>{{error}}</h2>
+    {{/if}}
+    <ol class="news_list">
+        {{#each news}}
+         <li>{{this}}</li>
+        {{/each}}
+    </ol>
+</div>
