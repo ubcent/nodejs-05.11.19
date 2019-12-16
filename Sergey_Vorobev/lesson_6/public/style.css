@@ -1,0 +1,9 @@
+.sign {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.sign a {
+    margin: 0 5px 0 5px;
+}
