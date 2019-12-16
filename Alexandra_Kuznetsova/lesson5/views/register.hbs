@@ -1,16 +1,16 @@
 <h2>Регистрация</h2>
 
-<form method="POST" action="/register">
-  <input type="text" name="email" placeholder="Email" /><br>
-  <input type="text" name="firstName" placeholder="Имя" /><br>
-  <input type="text" name="lastName" placeholder="Фамилия" /><br>
-  <input type="password" name="password" placeholder="Пароль" /><br>
-  <input type="password" name="repassword" placeholder="Повторите пароль" /><br>
-  <input type="submit" value="Зарегистрироваться" />
+<form method='POST' action='/register'>
+  <input type='text' name='email' placeholder='Email' /><br>
+  <input type='text' name='firstName' placeholder='Имя' /><br>
+  <input type='text' name='lastName' placeholder='Фамилия' /><br>
+  <input type='password' name='password' placeholder='Пароль' /><br>
+  <input type='password' name='repassword' placeholder='Повторите пароль' /><br>
+  <input type='submit' value='Зарегистрироваться' />
 </form> 
 <br>
 
 <h4 style='color:red;'>{{error}}</h4><br>
 
 <p>Уже зарегистрированы?</p>
-<a href="/auth">Войти</a><br>
+<a href='/auth'>Войти</a><br>

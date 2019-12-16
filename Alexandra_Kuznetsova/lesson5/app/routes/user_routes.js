@@ -13,7 +13,7 @@ const constraints = {
   password: {
     format: {
       pattern: /(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
-      message: 'должен содержать строчные и прописные латинские буквы, цифры, спецсимволы. Минимум 8 символов'
+      message: '^Пароль должен содержать строчные и прописные латинские буквы, цифры, спецсимволы. Минимум 8 символов'
     }
   }
 };
@@ -39,8 +39,7 @@ module.exports = function(app, db) {
               res.render('register', JSON.parse(JSON.stringify(error)));
             }
           } else {
-            let passMes = validPass.password[0];
-            const error = { error: passMes.replace('Password', 'Пароль') };
+            const error = { error: validPass.password[0] };
             res.render('register', JSON.parse(JSON.stringify(error)));
           }
         } else {
@@ -73,5 +72,36 @@ module.exports = function(app, db) {
 
     res.redirect('/auth');
   });
+
+  // показать данные личного кабинета
+  app.post('/user/lk', async (req, res) => {
+    const { _id } = req.user;
+    const user = await User.find({_id: _id});
+    try {
+      res.render('lk', { user });
+    } catch (e) {
+      let errorLk = { message: 'Ошибка при получении данных' };
+      res.render('notes', JSON.parse(JSON.stringify(errorLk)));
+    }
+  });
+
+  // обновить данные пользователя
+  app.post('/user/update', async (req, res) => {
+    const { _id } = req.user;
+    const newFirstName = req.body.firstName;
+    const newLastName = req.body.lastName;
+    const newBirthday = req.body.birthday;
+    const newPhoneNumber = req.body.phoneNumber;
+  
+    const newData = { firstName: newFirstName,
+                      lastName: newLastName,
+                      birthday: newBirthday,
+                      phoneNumber: newPhoneNumber };
+
+    await User.updateOne({_id: _id}, newData, {new: true});
+  
+    let message = { message: 'Данные успешно обновлены' };
+    res.render('lk', JSON.parse(JSON.stringify(message)));
+   });
 
 }

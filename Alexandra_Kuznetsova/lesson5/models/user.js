@@ -8,10 +8,13 @@ const SALT_ROUNDS = 12;
 // схема для создания пользователя
 const userSchema = new Schema({
   email: { type: String, required: true },
-  firstName: { type: String, default: 'NoName' },
-  lastName: { type: String, default: 'NoLastName' },
+  firstName: { type: String, default: '[ noName ]' },
+  lastName: { type: String, default: '[ noLastName ]' },
   password: { type: String, required: true },
-});
+  birthday: { type: Date },
+  phoneNumber: { type: Number }},
+  { versionKey: false }
+);
 
 // шифрование пароля
 userSchema.pre('save', function(next) {

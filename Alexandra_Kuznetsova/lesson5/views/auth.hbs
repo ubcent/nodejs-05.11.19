@@ -1,13 +1,14 @@
+
+<form method='POST' action='/auth'>
+  <input type='text' name='email' placeholder='Email' /><br/>
+  <input type='password' name='password' placeholder='Пароль' /><br/>
+  <input type='submit' value='Войти' /> 
+</form> 
+<br>
+
 {{#if error}}
   <b style='color:red;'>Неправльный логин или пароль</b>
 {{/if}}
 
-<form method="POST" action="/auth">
-  <input type="text" name="email" placeholder="Email" /><br/>
-  <input type="password" name="password" placeholder="Пароль" /><br/>
-  <input type="submit" value="Войти" /> 
-</form> 
-<br>
-
 <p>Еще не зарегистрированы?</p>
-<a href="/register">Зарегистрироваться</a><br>
+<a href='/register'>Зарегистрироваться</a><br>

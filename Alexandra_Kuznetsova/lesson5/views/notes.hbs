@@ -74,3 +74,12 @@
     <input type='submit' value='Удалить' />
   </form>
 {{/if}}
+
+<form method='POST' action='/user/lk'>
+  <p style='font-style: oblique'>Добавить информацию в личный кабинет</p>
+  <input type='submit' value='Перейти в ЛК' /> 
+</form>
+
+{{#if errorLk}}
+  <p style='color:red;'>{{errorLk}}</p>
+{{/if}}

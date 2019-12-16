@@ -39,8 +39,9 @@ mongoose.connect(db.URL, { useNewUrlParser: true, useUnifiedTopology: true, useF
   });               
 });
 
-// доступно только для зарегистрированных пользователей
+// доступно только после аутентификации
 app.use('/tasks', passport.mustBeAuthenticated);
+app.use('/user', passport.mustBeAuthenticated);
 
 app.get('/register', (req, res) => {
   res.render('register');
