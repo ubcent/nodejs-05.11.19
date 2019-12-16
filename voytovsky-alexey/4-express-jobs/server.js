@@ -55,10 +55,10 @@ app.post('/jobs', async (req, res) => {
 			const $ = cheerio.load(body);
 
 			const vacancies = [].slice.call($('.vacancy-serp-item')
-			.map((_, element) => 
-				`${$(element).find('.vacancy-serp-item__row_header').text()}
-				${$(element).find('.vacancy-serp-item__meta-info').text()}`
-			), 0, amount);
+				.map((_, element) => 
+					`${$(element).find('.vacancy-serp-item__row_header').text()}
+					${$(element).find('.vacancy-serp-item__meta-info').text()}`
+				), 0, amount);
 
 			res.render('jobs', {
 				jobs: vacancies,
