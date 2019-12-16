@@ -1,63 +1,105 @@
+const { red, yellowBright, bold } = require('cli-color');
 const express = require('express');
-const request = require('request');
-// const { load } = require('cheerio');
-const cheerio = require('cheerio');
 const consolidate = require('consolidate');
 const path = require('path');
+const request = require('request');
 const { promisify } = require('util');
-
-const cities = new Map([
-	['1', 'Moscow'],
-	['2', 'Petersburg'],
-]);
-
-const technologies = new Map([
-	['1', 'Node.js'],
-	['2', 'React.js'],
-]);
-
-// https://hh.ru/search/vacancy?area=1&st=searchVacancy&text=node.js
+const cheerio = require('cheerio');
 
 const promisifiedRequest = promisify(request);
 
 const app = express();
 
+app.use(express.static('public'));
 app.use(express.urlencoded({ extended: false }));
 
 app.engine('hbs', consolidate.handlebars);
 app.set('view engine', 'hbs');
 app.set('views', path.resolve(__dirname, 'views'));
 
+const url_storage = new Map([
+  ['hh', 'https://hh.ru/search/vacancy?area=null&text=null'],
+  ['hc', 'https://career.habr.com/vacancies?city_id=null&q=null']
+]);
+
 app.get('/jobs', (req, res) => {
-  res.render('jobs');
+	res.render('jobs', { title: 'Поиск работы' });
 });
 
 app.post('/jobs', async (req, res) => {
+
+	const { source, city, technology, amount } = req.body;
+	let city_id = null;
+
 	try {
-		const { count = 10, source = 'hh' } = req.body;
-
-		if (source == 'hh') {
-			const url = 'https://hh.ru/search/vacancy?';
-
-			for (let pair of cities) {
-				if (city == 'moscow') {
-					city = pair[0];
-				} else if (city == 'petersburg') {
-					city = pair[2
-				];
-				}
+		if (source == 'hh' && url_storage.has('hh')) {
+			switch (city) {
+				case 'moscow':
+					city_id = 1;
+					break;
+				case 'petersburg':
+					city_id = 2;
+					break;
+				default:
+					console.log(red.bold('Добавьте интересующий Вас город сюда и во "views/jobs.hbs"'));
+					res.render('jobs', {
+						no_city: 'Добавьте интересующий Вас город сюда и в "./server.js"'
+					});
 			}
+
+			const url = url_storage.get('hh')
+				.replace(/null/, `${city_id}`)
+				.replace(/null/, `${req.body.technology}`);
 
 			const { body } = await promisifiedRequest(url);
 			const $ = cheerio.load(body);
-			console.log($);
 
-		} else if (source = 'mk') {
-			// TODO:
+			const vacancies = [].slice.call($('.vacancy-serp-item')
+			.map((_, element) => 
+				`${$(element).find('.vacancy-serp-item__row_header').text()}
+				${$(element).find('.vacancy-serp-item__meta-info').text()}`
+			), 0, amount);
+
+			res.render('jobs', {
+				jobs: vacancies,
+			});
+
+		} else if (source == 'hc' && url_storage.has('hc')) {
+			switch (city) {
+				case 'moscow':
+					city_id = 678;
+					break;
+				case 'petersburg':
+					city_id = 679;
+					break;
+				default:
+					console.log(red.bold('Добавьте интересующий Вас город сюда и во "views/jobs.hbs"'));
+					res.render('jobs', {
+						no_city: 'Добавьте интересующий Вас город сюда и в "./server.js"'
+					});
+			}
+
+			const url = url_storage.get('hc')
+				.replace(/null/, `${city_id}`)
+				.replace(/null/, `${technology}`);
+
+			const { body } = await promisifiedRequest(url);
+			const $ = cheerio.load(body);
+
+			const vacancies = [].slice.call($('.job')
+				.map((_, element) => 
+					`${$(element).find('.inner').children('.date').text()}
+					${$(element).find('.inner').find('.title').text()}
+					${$(element).find('.inner').find('.salary').text()}`
+				), 0, amount);
+
+			res.render('jobs', {
+				jobs: vacancies,
+			});
 
 		} else {
 			res.render('jobs', {
-				err: 'такой источник не поддерживается',
+				err: 'Такого источника не существует!',
 			});	
 		};
 	}
@@ -67,46 +109,5 @@ app.post('/jobs', async (req, res) => {
 });
 
 app.listen(3030, () => {
-	console.log('Server has been started!');
+	console.log(yellowBright.bold('Сервер запущен! Порт: 3030'));
 });
-
-
-// const url = 'https://moikrug.ru/vacancies?q=node.js&currency=rur&location=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0&city_id=678&with_salary=1';
-
-    // const $ = cheerio.load(body);
-
-		// const jobs = Array.prototype.slice.call($('.quote__body').map((_, element) => $(element).text()), 0, count);
-		
-		// // $('.job').each(function() {
-		// // 	const job = $(this).find('.inner');
-		// // 	console.log(`${job.children('.date').text()}\n${job.find('.title').text()}\n${job.find('.salary').text()}\n`);
-		// // 	// 			});
-
-    // res.render('jobs', { jobs })
-
-
-
-// const program = () => {
-
-// 	const url = 'https://moikrug.ru/vacancies?q=node.js&currency=rur&location=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0&city_id=678&with_salary=1';
-
-// 	request(url, (err, response, body) => {
-
-// 		if (!err && response.statusCode === 200) {
-// 			const $ = cheerio.load(body);
-
-// 			console.log('\nВакансии со знанием технологии Node.js в Москве по данным сервиса "Мой круг":\n\n');
-
-// 			$('.job').each(function() {
-// 				const job = $(this).find('.inner');
-// 				console.log(`${job.children('.date').text()}\n${job.find('.title').text()}\n${job.find('.salary').text()}\n`);
-// 			});
-
-// 		} else if (err) {
-// 			console.error(err);
-// 			process.exit(1);
-// 		}
-// 	});
-// };
-
-// program();
