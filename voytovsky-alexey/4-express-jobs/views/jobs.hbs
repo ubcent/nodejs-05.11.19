@@ -16,7 +16,7 @@
 
       <label for="source-choice">Ресурс:</label>
       <select name="source" id="source-choice">
-        <option value="hh" selected="selected">hh</option>
+        <option value="hh">hh</option>
         <option value="hc">Хабр Карьера</option>
       </select>
 
@@ -24,12 +24,13 @@
       <select name="city" id="city-choice">
         <option value="moscow">Москва</option>
         <option value="petersburg">Санкт-Петербург</option>
+        <option value="new_city">Добавьте ещё города по желанию</option>
       </select>
 
       <label for="technology-choice">Технология:</label>
       <select name="technology" id="technology-choice">
-        <option value="node" selected="selected">Node.js</option>
-        <option value="react">React.js</option>
+        <option value="node.js">Node.js</option>
+        <option value="react.js">React.js</option>
       </select>
 
       <label for="jobs-amount">Количество вакансий:</label>
@@ -41,6 +42,10 @@
 
   {{#if err}}
     <h3>{{err}}</h3>
+  {{/if}}
+
+  {{#if no_city}}
+    <h2>{{no_city}}</h2>
   {{/if}}
 
   {{#if jobs}}
