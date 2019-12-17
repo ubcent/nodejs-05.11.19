@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { Schema, model, ObjectId } = require('mongoose');
 
 const taskSchema = new Schema({
-  title: { type: String, required: true },
-  completed: { type: Boolean, default: false },
+    title: { type: String, required: true },
+    completed: { type: Boolean, default: false },
+    user: { type: ObjectId, ref: 'User' },
 });
 
-module.exports = mongoose.model('Task', taskSchema, 'tasks');
+module.exports = model('Task', taskSchema, 'tasks');
