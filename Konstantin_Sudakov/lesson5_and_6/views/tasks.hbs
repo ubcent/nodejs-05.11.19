@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>Приложение "Мои задачи"</title>
+    <style>
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .content h1 {
+            width: 70%;
+            text-align: center;
+        }
+        .btn-primary {
+            margin-bottom: 10px;
+        }
+        .content__tasks {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+        .card {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+        <a class="navbar-brand" href="/">Главная</a>
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+                <a class="nav-link" href="/tasks">Просмотр моих задач <span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link add__task" href="/task/add">Добавить новую задачу</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link add__task" href="/register">Зарегестрироваться</a>
+            </li>
+        </ul>
+        <a href="/auth" class="btn btn-outline-success my-2 my-sm-0" type="submit">Войти</a>
+        <a href="/logout" class="btn btn-outline-success my-2 my-sm-0" type="submit">Выйти</a>
+    </div>
+</nav>
+<div class="content">
+    <h1>Ваши задачи</h1>
+    <div class="content__tasks">
+        {{#each tasks}}
+            <div class="card text-center" style="width: 18rem;">
+                <div class="card-body">
+                    {{#if this.completed}}
+                        <h5 class="card-title">Задача выполнена</h5>
+                    {{else}}
+                        <h5 class="card-title">Задача невыполнена</h5>
+                    {{/if}}
+                    <p class="card-text">{{this.title}}</p>
+                    <form method="POST" action="/tasks/completed">
+                        {{#if this.completed}}
+                            <input type="submit" value="Отметить как невыполненую" name="completed" class="btn btn-primary mb-2" />
+                        {{else}}
+                            <input type="submit" value="Отметить как выполненую" name="completed" class="btn btn-primary mb-2" />
+                        {{/if}}
+                        <input type="hidden" value="{{this._id}}" name="_id" />
+                    </form>
+                    <a href="/tasks/edit/{{this._id}}" class="btn btn-primary mb-2">Редактировать</a>
+                    <form method="POST" action="/tasks/delete">
+                        <input type="submit" value="Удалить" class="btn btn-primary mb-2" name="delete" />
+                        <input type="hidden" value="{{this._id}}" name="_id" />
+                    </form>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>

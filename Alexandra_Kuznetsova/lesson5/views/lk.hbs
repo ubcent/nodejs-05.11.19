@@ -1,0 +1,30 @@
+{{#each user}}
+
+<h2>Личный кабинет {{this.firstName}}</h2>
+
+<p>Имя: {{this.firstName}}</p>
+<p>Фамилия: {{this.lastName}}</p>
+<p>Возраст: {{this.age}}</p>
+<p>Номер телефона: {{this.phoneNumber}}</p><br/><br/>
+
+  <form method='POST' action='/user/update'>
+    <input type='hidden' name='id' value='{{this._id}}' readonly />
+    <label for='firstName'>Имя</label>
+    <input style='margin-bottom: 10px;' name='firstName' value='{{this.firstName}}' placeholder='Имя' />
+    <label for='lastName'>Фамилия</label>
+    <input style='margin-bottom: 10px;' name='lastName' value='{{this.lastName}}' placeholder='Фамилия' />
+    <label for='birthday'>Дата рождения</label>
+    <input style='margin-bottom: 10px;' type='date' name='birthday' value='{{this.birthday}}' />
+    <label for='phoneNumber'>Номер телефона</label>
+    <input style='margin-bottom: 10px;' type='number' name='phoneNumber' value='{{this.phoneNumber}}' placeholder='Номер телефона' /><br/>
+    <input style='margin-bottom: 10px;' type='submit' value='Принять изменения' />
+  </form>
+  <br/>
+{{/each}}
+
+<p>{{message}}</p>
+
+<div>
+<a href='/tasks'>Вернуться в задачи</a><br><br>
+<a href='/logout'>Выйти</a><br>
+</div>

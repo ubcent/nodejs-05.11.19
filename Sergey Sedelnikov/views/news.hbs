@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Новости Екатеринбурга</title>
+    </head>
+    <body>
+        <form method="post" action="/newsEKB">
+            <label for="count">Количество новостей: </label>
+            <input type="input" value="10" name="count">
+
+            <br>
+
+            <label for="typeNews">Рубрика: </label>
+            <select name="typeNews">
+                <option selected>Вcе подряд</option>
+                <option>Авто</option>
+                <option>Бизнес</option>
+                <option>Город</option>
+                <option>Здоровье</option>
+                <option>Наука</option>
+                <option>Недвижимость</option>
+                <option>Политика</option>
+                <option>Спорт</option>
+            </select>
+
+            <input type="submit">
+        </form>
+
+        <div>
+            <table style="border-collapse: collapse">
+                <tr>
+                    <th style="border: 1px solid black">Рубрика</th>
+                    <th style="border: 1px solid black">Дата</th>
+                    <th style="border: 1px solid black">Новость</th>
+                </tr>
+                {{#each newsarr}}
+                <tr>
+                    <td style="border: 1px solid black">{{this.type}}</td>
+                    <td style="border: 1px solid black">{{this.date}}</td>
+                    <td style="border: 1px solid black">{{this.news}}</td>
+                </tr>
+                {{/each}}
+            </table>
+        </div>
+    </body>
+</html>
