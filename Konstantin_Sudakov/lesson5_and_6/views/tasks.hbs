@@ -25,9 +25,6 @@
         .card {
             margin-right: 5px;
         }
-        .help {
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -42,19 +39,20 @@
                 <a class="nav-link" href="/tasks">Просмотр моих задач <span class="sr-only"></span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link add__task" href="/add_task">Добавить новую задачу</a>
+                <a class="nav-link add__task" href="/task/add">Добавить новую задачу</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link add__task" href="/register">Зарегестрироваться</a>
             </li>
         </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="что забыли?" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Найти задачу</button>
-        </form>
+        <a href="/auth" class="btn btn-outline-success my-2 my-sm-0" type="submit">Войти</a>
+        <a href="/logout" class="btn btn-outline-success my-2 my-sm-0" type="submit">Выйти</a>
     </div>
 </nav>
 <div class="content">
     <h1>Ваши задачи</h1>
     <div class="content__tasks">
-        {{#each tasks_arr}}
+        {{#each tasks}}
             <div class="card text-center" style="width: 18rem;">
                 <div class="card-body">
                     {{#if this.completed}}
@@ -63,17 +61,19 @@
                         <h5 class="card-title">Задача невыполнена</h5>
                     {{/if}}
                     <p class="card-text">{{this.title}}</p>
-                    <form method="POST" action="/tasks">
+                    <form method="POST" action="/tasks/completed">
                         {{#if this.completed}}
-                            <input type="submit" value="Отметить как невыполненую" name="completed" id="123" class="btn btn-primary mb-2" />
+                            <input type="submit" value="Отметить как невыполненую" name="completed" class="btn btn-primary mb-2" />
                         {{else}}
-                            <input type="submit" value="Отметить как выполненую" name="completed" id="123" class="btn btn-primary mb-2" />
+                            <input type="submit" value="Отметить как выполненую" name="completed" class="btn btn-primary mb-2" />
                         {{/if}}
-                        <input type="submit" value="Редактировать" class="btn btn-primary mb-2" name="edit" />
-                        <input type="submit" value="Удалить" class="btn btn-primary mb-2" name="delete" />
-                        <input type="text" value="{{this._id}}" name="_id" class="help">
+                        <input type="hidden" value="{{this._id}}" name="_id" />
                     </form>
-
+                    <a href="/tasks/edit/{{this._id}}" class="btn btn-primary mb-2">Редактировать</a>
+                    <form method="POST" action="/tasks/delete">
+                        <input type="submit" value="Удалить" class="btn btn-primary mb-2" name="delete" />
+                        <input type="hidden" value="{{this._id}}" name="_id" />
+                    </form>
                 </div>
             </div>
         {{/each}}
