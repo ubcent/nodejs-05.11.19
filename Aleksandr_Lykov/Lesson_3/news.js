@@ -7,6 +7,7 @@ request('https://8sidor.se/kategori/vardags/', (err, res, body) => {
     if(!err && res.statusCode === 200) {
         const news = cheerio.load(body)
         const allNews = []
+        console.log(`\nNEWS SITE: ${news('head > title').text()}\n-----------------  NEWS  -----------------\n`)
         news('body > div.container.main-content > div.row.row-equal-height > div.col-md-8.blog-main > article.article-medium > h2 > a').each((index, el) => {
             allNews.push({title: el.children[0].data})
         })
