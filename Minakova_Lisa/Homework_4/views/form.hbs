@@ -1,0 +1,11 @@
+<div>
+    <form method="POST" action="/settings" id="news">
+        <input type="text" name="count" placeholder="Количество новостей" required />
+        <select form="news" name="name" required>
+            {{#each soureces}}
+            <option>{{this.name}}</option>
+            {{/each}}
+        </select>
+        <input type="submit" />
+    </form>
+</div>
