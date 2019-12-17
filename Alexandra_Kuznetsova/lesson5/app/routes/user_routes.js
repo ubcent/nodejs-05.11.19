@@ -78,6 +78,8 @@ module.exports = function(app, db) {
     const { _id } = req.user;
     const user = await User.find({_id: _id});
     try {
+      const age = new Date().getFullYear() - new Date(req.user.birthday).getFullYear();
+      user[0].age = age;
       res.render('lk', { user });
     } catch (e) {
       let errorLk = { message: 'Ошибка при получении данных' };
@@ -90,7 +92,16 @@ module.exports = function(app, db) {
     const { _id } = req.user;
     const newFirstName = req.body.firstName;
     const newLastName = req.body.lastName;
-    const newBirthday = req.body.birthday;
+    
+    function bDay(param) {
+      if (param === '') {
+        return req.user.birthday;
+      } else {
+        return param;
+      }
+    }
+
+    const newBirthday = bDay(req.body.birthday);
     const newPhoneNumber = req.body.phoneNumber;
   
     const newData = { firstName: newFirstName,
