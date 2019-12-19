@@ -1,0 +1,59 @@
+// Признаки REST
+// Richardson Maturity Model
+// Level 0: JSON, HTTP(S) POST (GET)
+// /data {"operation": "add", "entity": "user", "payload": {...}}
+// Level 1: URI 
+// /task
+// /user
+// Level 2: CRUD - Create Read Update Delete, http-methods
+// GET - Read
+// POST - Create
+// PUT/PATCH - Update
+// DELETE - Delete
+// -------------------------------
+// GET (HEAD) /tasks Возвращает список всех задач
+// GET (HEAD) /tasks/:id Возвращает отдельную задачу по id 
+// Example: HEAD /tasks/:id 200 (Задача существует), 404 (Задачи нет)
+// POST /tasks Создает задачу
+// PUT /tasks/:id Полностью заменит задачу по id (full update)
+// PATCH /tasks/:id Замена некоторых полей задачи по id (partial update)
+// DELETE /tasks/:id Удаление задачи по id
+// OPTIONS любой
+// todo.ru -> ajax api.todo.ru
+// Level 2.1 Заголовки
+// Level 2.2 
+// GET /tasks?_page=0&search=blabla&sort=timestamp
+// Level 2.3
+// 200 - OK
+// 201 - Created
+// 204 - No content
+// 304 - Not modified
+// 400 - Bad request
+// 401 - Unauthorized
+// 403 - Forbidden
+// 404 - Not found
+// 500 - Internal server error
+// Level 3
+// Accept: application/json
+// Accept: text/plain
+// HATEOAS Hypermedia As Transfer Engine Of Application State
+
+// GET /tasks
+/* [
+  {
+    "id": 1,
+    "title": "Покормить кота",
+    "links": [
+      {
+        "rel": "self",
+        "href": "http://localhost:3000/tasks/1"
+      },
+      {
+        "rel": "history",
+        "href": "http://localhost:3000/tasks/1/history"
+      }
+    ]
+  }
+]*/
+// Level 3.1 Версионирование
+// /v1/tasks
