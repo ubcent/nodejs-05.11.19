@@ -1,0 +1,28 @@
+<a href="/logout">Выход</a>
+<h2>Список задач</h2>
+<form method="POST" action="/tasks">
+    <input type="text" name="title" placeholder="Навая задача" required>
+    <input type="submit" value="Добавить">
+</form>
+{{#if error}}
+    <h2>{{error}}</h2>
+{{/if}}
+<ol class="tasks">
+    {{#each tasks}}
+        <li>
+            {{#if this.completed}}
+                Выполнено
+            {{else}}
+                <form method="POST" action="/tasks/complete" style="display:inline-block;">
+                    <input type="hidden" name="_id" value="{{this._id}}" />
+                    <input type="submit" value="Выполнено" />
+                </form>
+            {{/if}}
+            {{this.title}}
+            <form method="POST" action="/tasks/delete" style="display:inline-block;">
+                <input type="hidden" name="_id" value="{{this._id}}" />
+                <input type="submit" value="Удалить" />
+            </form>
+        </li>
+    {{/each}}
+</ol>
