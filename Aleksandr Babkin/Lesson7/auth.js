@@ -33,10 +33,10 @@ passport.deserializeUser(async (id, done) => {
 module.exports = {
     initialize: passport.initialize(),
     session: passport.session(),
-    authenticate: passport.authenticate('local', {
-        successRedirect: '/task',
-        failureRedirect: '/home?error=1'
-    }),
+    // authenticate: passport.authenticate('local', {
+    //     successRedirect: '/task',
+    //     failureRedirect: '/home?error=1'
+    // }),
 
     mustBeAuthenticated: (req, res, next) => {
         if (req.user) {
