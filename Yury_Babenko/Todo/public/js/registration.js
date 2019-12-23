@@ -15,7 +15,7 @@ async function onRegisterSubmit() {
   };
 
   try {
-    let response = await fetch('/api/users', {
+    let response = await fetch('/registration', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

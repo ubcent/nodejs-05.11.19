@@ -39,7 +39,7 @@ module.exports = {
   initialize: passport.initialize(),
   session: passport.session(),
   authenticate: passport.authenticate('local', {
-    successRedirect: '/',
+    successRedirect: '/tasks',
     failureRedirect: '/auth?error=1',
   }),
   mustBeAuthenticated: (req, res, next) => {
@@ -55,7 +55,7 @@ module.exports = {
   },
   mustBeNotAuthenticated: (req, res, next) => {
     if (req.user) {
-      res.redirect('/');
+      res.redirect('/tasks');
     } else {
       next();
     }

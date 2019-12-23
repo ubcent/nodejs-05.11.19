@@ -11,7 +11,7 @@ async function onAuthSubmit() {
   };
 
   try {
-    const response = await fetch('/api/auth', {
+    const response = await fetch('/auth', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -19,7 +19,11 @@ async function onAuthSubmit() {
       body: JSON.stringify(payload),
     });
 
-    window.location = response.url;
+    const user = await response.json();
+
+    localStorage.setItem('authToken', user.token);
+
+    window.location = '/tasks';
   } catch (err) {
     alert('Ошибка при авторизации');
   }
