@@ -30,7 +30,6 @@ app.set( 'views', path.resolve( __dirname, 'views') );
 app.use( '/tasks', passport.checkAuthentication );
 
 app.use( passport.initialize );
-// app.use( passport.authenticate );
 app.use('/tasks', passport.mustBeAuthenticated );
 
 /**
@@ -99,9 +98,9 @@ app.delete('/tasks', async ( req, res ) => {
     try {
         const { body: { id } } = req;
         await Task.findByIdAndDelete(id);
-        res.status( ).send( true );
+        res.status( 203 ).send();
     } catch( e ) {
-        res.status( 203 ).send( false );
+        res.status( 403 ).send();
     }
 });
 
@@ -176,10 +175,10 @@ app.post('/register', async ( req, res ) => {
 
     if ( !errors ) {
        await user.save();
-       res.status( 201 ).send();
+       res.status( 201 )
        return res.redirect('/login');
     } else {
-        res.status( 400 ).send();
+        res.status( 400 )
     }
 
     res.redirect( '/register' );
