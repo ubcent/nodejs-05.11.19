@@ -1,0 +1,54 @@
+<style>
+    ul {
+        list-style-type: none;
+    }
+
+    li {
+        display: flex;
+    }
+</style>
+
+<div>
+
+    <form method="POST" action="addTask" id="tasks">
+        <input type="text" name="title" placeholder="Введите новую задачу" required />
+        <input type="submit" />
+        <h2>Список дел: </h2>
+
+    </form>
+
+    <ul>
+        {{#each list}}
+        <li>
+            {{this.title}}
+            <form action="/delete" method="POST">
+                <button>Удалить</button>
+                <input type="hidden" name="id" value="{{this._id}}">
+
+            </form>
+            </form>
+            <form action="/completed" method="POST">
+                <button>Выполнено</button>
+                <input type="hidden" name="id" value="{{this._id}}">
+            </form>
+
+        </li>
+        {{/each}}
+
+    </ul>
+
+    <h2>Выполненные задачи</h2>
+    <ul>
+        {{#each completedList}}
+        <li>
+            {{this.title}}
+            <form action="/completed" method="POST">
+                <button value="{{this._id}}">Не выполнена</button>
+                <input type="hidden" name="id" value="{{this._id}}">
+            </form>
+
+        </li>
+        {{/each}}
+    </ul>
+
+</div>

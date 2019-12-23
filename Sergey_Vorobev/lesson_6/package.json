@@ -1,0 +1,26 @@
+{
+  "name": "lesson_6",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-mongo": "^3.2.0",
+    "consolidate": "^0.15.1",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "handlebars": "^4.5.3",
+    "mongoose": "^5.7.14",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "url-parse": "^1.4.7"
+  },
+  "devDependencies": {
+    "eslint": "^6.7.2"
+  },
+  "description": ""
+}
