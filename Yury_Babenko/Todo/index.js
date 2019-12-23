@@ -28,27 +28,6 @@ app.use(express.static(__dirname + '/public'));
 
 app.use(cors());
 
-// const authRules = {
-//   mustBeAuthenticated: (req, res, next) => {
-//     if (req.user) {
-//       next();
-//     } else {
-//       if (req.url !== '/auth') {
-//         res.redirect('/auth');
-//       } else {
-//         next();
-//       }
-//     }
-//   },
-//   mustBeNotAuthenticated: (req, res, next) => {
-//     if (req.user) {
-//       res.redirect('/tasks');
-//     } else {
-//       next();
-//     }
-//   },
-// }
-
 const checkAuthorization = (req, res) => {
   if (req.headers.authorization) {
     const [type, token] = req.headers.authorization;
