@@ -40,7 +40,7 @@
                 <a class="nav-link" href="/tasks">Просмотр моих задач <span class="sr-only"></span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link add__task" href="/task/add">Добавить новую задачу</a>
+                <a class="nav-link add__task" href="/tasks/add">Добавить новую задачу</a>
             </li>
         </ul>
         <a href="/auth" class="btn btn-outline-success my-2 my-sm-0" type="submit">Войти</a>
@@ -50,7 +50,7 @@
 <div class="content">
     <h1>Редактируем задачу</h1>
     <div class="add">
-        <form method="POST" action="/tasks/edit" class="form_add">
+        <form method="PUT" action="/tasks/{{data._id}}" class="form_add">
             <div class="form-group">
                 <label for="formGroupExampleInput">Текст задачи</label>
                 <input type="text" class="form-control" id="formGroupExampleInput" placeholder="{{data.title}}" name="title">
@@ -62,7 +62,8 @@
                     <option>Выполнена</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Редактировать задачу</button>
+            <input type="submit" value="Редактировать задачу" class="btn btn-primary">
+<!--            <button type="submit" class="btn btn-primary edit">Редактировать задачу</button>-->
             <input type="text" class="help" name="_id" value="{{data._id}}">
         </form>
     </div>
