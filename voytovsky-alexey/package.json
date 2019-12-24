@@ -10,20 +10,30 @@
   "license": "ISC",
   "dependencies": {
     "ansi": "^0.3.1",
+    "bcryptjs": "^2.4.3",
     "chalk-animation": "^1.6.0",
     "cheerio": "^1.0.0-rc.3",
     "cli-color": "^2.0.0",
+    "connect-mongo": "^3.2.0",
     "consolidate": "^0.15.1",
+    "cookie-parser": "^1.4.4",
     "express": "^4.17.1",
+    "express-session": "^1.17.0",
     "handlebars": "^4.5.3",
+    "handlebars-helpers": "^0.10.0",
     "minimist": "^1.2.0",
-    "nodemailer": "^6.3.1",
+    "mongoose": "^5.8.1",
+    "mysql": "^2.17.1",
+    "nodemailer": "^6.4.2",
     "nodemon": "^2.0.2",
-    "npm-check-updates": "^3.2.1",
+    "npm-check-updates": "^3.2.2",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
     "request": "^2.88.0",
+    "request-promise": "^4.2.5",
     "sequelize": "^5.21.3"
   },
   "devDependencies": {
-    "pm2": "^4.1.2"
+    "pm2": "^4.2.1"
   }
 }
