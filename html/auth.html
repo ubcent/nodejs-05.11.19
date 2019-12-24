@@ -39,7 +39,9 @@
         })
         .then((response) => {
           if (response.token) {
-            localStorage.setItem('token', response.token);
+            const { token, ...user } = response;
+            localStorage.setItem('token', token);
+            localStorage.setItem('user', JSON.stringify(user));
 
             window.location = '/';
           }
