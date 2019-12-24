@@ -27,8 +27,9 @@ app.use(express.static(__dirname + '/node_modules/jquery/dist'));
 // }));
 app.use(passport.initialize);
 app.use(passport.session);
-app.use('/task', passport.mustBeAuthenticated);
+// app.use('/task', passport.mustBeAuthenticated);
 app.use(cors());
+app.use('/task', checkAuthantication);
 
 app.listen(3000, () => {
     console.log('Server has been started!');
@@ -62,9 +63,9 @@ app.post('/register', async (req, res) => {
     if (restBody.password === repassword) {
         const user = new User(restBody);
         await user.save();
-        res.status(201).send({message: 'Пользователь успешно создан!'});
+        res.status(201).send({ message: 'Пользователь успешно создан!' });
     } else {
-        res.status(400).json({message: 'Ошибка в создании пользователя'});
+        res.status(400).json({ message: 'Ошибка в создании пользователя' });
     }
 });
 
@@ -80,12 +81,35 @@ app.post('/auth', async (req, res) => {
     if(!user.ValidatePassword(password)) {
         return res.status(401);
     }
+
+    const plainUser = JSON.parse(JSON.stringify(user));
+    delete plainUser.password;
+
+    res.status(200).json({
+        ...plainUser,
+        token: jwt.sign(plainUser, 'super secret key'),
+    });
 });
 
 app.get('/auth', (req, res) => {
     const { error } = req.query;
     res.render('auth', { error });
 });
+
+const checkAuthantication = (req, res, next) => {
+    if (req.headers.authorization) {
+        const [type, token] = req.headers.authorization.split(' ');
+        jwt.verify(token, 'super secret key', (err, decoded) => {
+            if (err) {
+                return res.status(403).send();
+            }
+            req.user.decoded;
+            next();
+        });
+    } else {
+        res.status(403).send();
+    }
+}
 
 // получение списка задач
 
@@ -111,7 +135,6 @@ app.post('/addTask', (req, res) => {
     task.save()
         .then((savedTask) => {
             res.status(204).json(savedTask);
-            res.redirect('/task');
         })
         .catch(() => {
             res.status(400).json({ message: 'Validation error' })
@@ -125,17 +148,27 @@ app.post('/getTask', async (req, res) => {
     res.render('editTask', { getTask });
 });
 
-app.post('/editTask', async (req, res) => {
-    await Task.updateMany({ _id: req.body.idTask }, { $set: { title: req.body.inputEditTask, priorityTask: req.body.gridRadios } });
-    res.redirect('/task');
+app.put('tasks/:id', async (req, res) => {
+    const task = await Task.findOneAndUpdate({ _id: req.params.id }, { $set: req.body });
+    res.status(200).json(task);
 })
+
+// app.post('/editTask', async (req, res) => {
+//     await Task.updateMany({ _id: req.body.idTask }, { $set: { title: req.body.inputEditTask, priorityTask: req.body.gridRadios } });
+//     res.redirect('/task');
+// })
 
 // удаление задачи
 
-app.post('/delTask', async (req, res) => {
-    await Task.deleteMany({ _id: { $in: req.body.checkBoxTask } });
-    res.redirect('/task');
-});
+// app.post('/delTask', async (req, res) => {
+//     await Task.deleteMany({ _id: { $in: req.body.checkBoxTask } });
+//     res.redirect('/task');
+// });
+
+app.delete('tasks/:id', async(req, res) => {
+    await Task.findOneAndRemove({_id: req.params.id});
+    res.status(204).json.send()
+})
 
 
 
