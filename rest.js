@@ -2,8 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 
-mongoose.connect('mongodb://localhost:32772/tasks', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
+mongoose.connect('mongodb://localhost:32768/tasks', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 
 const Task = require('./models/task');
 const User = require('./models/user');
@@ -31,6 +32,18 @@ const checkAuthentication = (req, res, next) => {
     res.status(403).send();
   }
 }
+
+app.get('/', (req, res) => {
+  res.sendFile(
+    path.resolve(__dirname, 'html', 'index.html'),
+  );
+});
+
+app.get('/auth', (req, res) => {
+  res.sendFile(
+    path.resolve(__dirname, 'html', 'auth.html'),
+  );
+});
 
 app.use('/tasks', checkAuthentication);
 
@@ -99,11 +112,11 @@ app.post('/auth', async (req, res) => {
   const user = await User.findOne({ email: username });
 
   if (!user) {
-    return res.status(401);
+    return res.status(401).send();
   }
 
   if (!user.validatePassword(password)) {
-    return res.status(401);
+    return res.status(401).send();
   }
 
   const plainUser = JSON.parse(JSON.stringify(user));

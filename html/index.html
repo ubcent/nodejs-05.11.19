@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <ul id="list"></ul>
+  <script>
+    window.addEventListener('load', () => {
+      const $list = document.querySelector('#list');
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        window.location = '/auth';
+      }
+
+      fetch('/tasks', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then((response) => {
+          if (response.status !== 200) {
+            localStorage.removeItem('token');
+            window.location = '/auth';
+
+            return null;
+          }
+
+          return response.json();
+        })
+        .then((tasks) => {
+          tasks.forEach((task) => {
+            const $li = document.createElement('li');
+            $li.textContent = `${task.completed ? '+' : '-'} ${task.title}`;
+            $list.appendChild($li);
+          });
+        });
+    });
+  </script>
+</body>
+</html>
