@@ -73,7 +73,6 @@ window.addEventListener('load', () => {
     }
 
     socket.on(`created:${user._id}`, (task) => {
-        console.log('+')
         const $tableBody = document.querySelector('.tasks.tbody');
         const itemHtml = `
                 <tr>
