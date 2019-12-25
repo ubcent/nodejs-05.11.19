@@ -6,18 +6,19 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="/css/style.css"/>
     <script src="/scripts/script.js" defer ></script>
+    <script src="/socket.io/socket.io.js"></script>
     <title>Document</title>
 </head>
-<body>
+<body class="tasks__container">
 
     <p>{{ navpanel user }}</p>
     
-    <form action="/tasks" method="POST">
-        <input type="text" name="title">
-        <button type="submit">Add Task</button>
+    <form>
+        <input id="new_task_title" type="text" name="title">
+        <button class="btn_create" type="button">Add Task</button>
     </form>
 
-    <div class="tasks__container">
+    <div>
         <table>
             <thead>
                 <tr>
@@ -26,7 +27,7 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="tasks tbody">
             {{#each tasks }}
                 <tr>
                     <td>{{ this.title }}</td>
