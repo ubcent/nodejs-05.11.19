@@ -69,6 +69,12 @@ io.on('connection', (socket) => {
         await Task.findOneAndUpdate({ _id: taskId }, { $set: { completed: !task.completed } });
     });
 
+    socket.on('delete', async (taskId) => {
+        await Task.findByIdAndDelete(taskId);
+        socket.broadcast.emit('deleted', taskId );
+        socket.emit( 'deleted', taskId );
+    });
+
     socket.on('disconnect', () => {
         console.log('Someone has disconnected!');
     });

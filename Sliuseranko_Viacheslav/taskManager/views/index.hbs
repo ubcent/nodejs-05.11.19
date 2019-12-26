@@ -29,7 +29,7 @@
             </thead>
             <tbody class="tasks tbody">
             {{#each tasks }}
-                <tr>
+                <tr class="task__row" data-id={{ this._id }}>
                     <td>{{ this.title }}</td>
                     <td>
                         {{ checkBox this }}

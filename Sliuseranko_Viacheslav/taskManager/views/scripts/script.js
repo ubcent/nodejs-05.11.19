@@ -2,19 +2,9 @@
  * функция обработчик удаления события
  * @param target event.target
  **/
-async function handleDelete(target) {
+async function handleDelete( target, socket ) {
     const { dataset: { id } } = target;
-    const result = await fetch('/tasks', {
-         method: 'DELETE',
-         headers: {
-             'Content-Type': 'application/json'
-         },
-         body: JSON.stringify({ id })
-     });
-
-    if ( result ) {
-        target.parentNode.parentNode.remove();
-    }
+    socket.emit('delete', id );
 }
 
 /** 
@@ -61,7 +51,7 @@ window.addEventListener('load', () => {
             const { target } = event;
             const { classList } = target;
             if ( classList.contains( 'btn_delete' ) ) {
-                handleDelete(target);
+                handleDelete( target, socket );
             } else if ( classList.contains( 'btn_check' ) ) {
                 handleToggleStatus(target);
             } else if ( classList.contains( 'btn_update' ) ) {
@@ -72,22 +62,28 @@ window.addEventListener('load', () => {
         });
     }
 
-    socket.on(`created:${user._id}`, (task) => {
+    socket.on(`created:${ user._id }`, ({ _id, title, completed }) => {
         const $tableBody = document.querySelector('.tasks.tbody');
+        const $tr = document.createElement('tr');
+        $tr.classList.add('task__row');
+        $tr.dataset.id = _id;
+
         const itemHtml = `
-                <tr>
-                    <td>${ task.title }</td>
-                    <td>
-                        <input class="btn_check" type="checkbox" data-id="${ task._id }" ${ task.completed ? 'checked' : '' }/>
-                    <td>
-                        <button class="btn_update" data-href="/tasks/update/${ task._id }">Update</button>
-                        <button class="btn_delete" data-id="${ task._id }">Delete</button>
-                    </td>    
-                </tr>
+                <td>${ title }TEST</td>
+                <td>
+                    <input class="btn_check" type="checkbox" data-id="${ _id }" ${ completed ? 'checked' : '' }/>
+                <td>
+                    <button class="btn_update" data-href="/tasks/update/${ _id }">Update</button>
+                    <button class="btn_delete" data-id="${ _id }">Delete</button>
+                </td> 
         `;
 
-        const $tr = document.createElement('tr');
         $tr.innerHTML = itemHtml;
         $tableBody.appendChild($tr);
-    }); 
+    });
+
+    socket.on('deleted', ( taskId ) => {
+        const $row = document.querySelector( `.task__row[data-id="${ taskId }"]` );
+        $row.remove();
+    });
 });
