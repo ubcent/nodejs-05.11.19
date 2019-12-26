@@ -7,3 +7,8 @@ gbnodejs.code-workspace
 
 # Working directory
 work/
+
+# Apple Desktop Services Store
+../../.DS_Store
+../.DS_Store
+.DS_Store
