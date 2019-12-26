@@ -64,9 +64,11 @@ io.on('connection', (socket) => {
         socket.emit(`created:${ userId }`, savedTask );
     });
 
-    socket.on('toggle', async (taskId) => {
+    socket.on('toggle', async ( taskId ) => {
         const task = await Task.findById(taskId);
-        await Task.findOneAndUpdate({ _id: taskId }, { $set: { completed: !task.completed } });
+        task.set({ completed: !task.completed });
+        task.save();
+        socket.broadcast.emit(`toggle`, taskId );
     });
 
     socket.on('delete', async (taskId) => {

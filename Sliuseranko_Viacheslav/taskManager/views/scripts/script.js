@@ -1,38 +1,12 @@
-/** 
- * функция обработчик удаления события
- * @param target event.target
- **/
-async function handleDelete( target, socket ) {
-    const { dataset: { id } } = target;
-    socket.emit('delete', id );
-}
-
-/** 
- * функция обработчик удаления события
- * @param target event.target
- **/
 async function handleToggleStatus(target) {
     const { dataset: { id } } = target;
-    const result = await fetch(`/tasks/${ id }`, {
-         method: 'PATCH',
-         headers: { 'Content-Type': 'application/json' },
-     });
-
-    if ( result ) {
-        target.value = result;
-    }
+    socket.emit('toggle', id );
 }
 
 /** переход на страницу указаную в дада атрибуте */
 function handleChangeLocation(target) {
     const { dataset: { href } } = target;
     location.href = href;
-}
-
-async function handleCreateTask(socket) {
-    const title = document.querySelector('#new_task_title').value;
-    const user = JSON.parse( localStorage.getItem('user') );
-    socket.emit('create', { title, userId: user._id });
 }
 
 window.addEventListener('load', () => {
@@ -49,15 +23,18 @@ window.addEventListener('load', () => {
     if ( container ) {
         container.addEventListener( 'click', ( event ) => {
             const { target } = event;
-            const { classList } = target;
-            if ( classList.contains( 'btn_delete' ) ) {
-                handleDelete( target, socket );
+            const { classList, dataset: { id } } = target;
+          
+            if ( classList.contains( 'btn_create' ) ) {
+                const title = document.querySelector('#new_task_title').value;
+                const user = JSON.parse( localStorage.getItem('user') );
+                socket.emit('create', { title, userId: user._id });
+            } else if ( classList.contains( 'btn_delete' ) ) {
+                socket.emit('delete', id );
             } else if ( classList.contains( 'btn_check' ) ) {
-                handleToggleStatus(target);
+                socket.emit('toggle', id );
             } else if ( classList.contains( 'btn_update' ) ) {
                 handleChangeLocation( target );
-            } else if ( classList.contains( 'btn_create' ) ) {
-                handleCreateTask( socket );
             }
         });
     }
@@ -85,5 +62,13 @@ window.addEventListener('load', () => {
     socket.on('deleted', ( taskId ) => {
         const $row = document.querySelector( `.task__row[data-id="${ taskId }"]` );
         $row.remove();
+    });
+
+    socket.on('toggle', ( taskId ) => {
+        const $checkBox = document.querySelector( `.task__row[data-id="${ taskId }"] .btn_check` );
+        console.log(
+            $checkBox
+        )
+        $checkBox.checked = !$checkBox.checked;
     });
 });
