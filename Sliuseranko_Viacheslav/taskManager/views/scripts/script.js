@@ -1,8 +1,3 @@
-async function handleToggleStatus(target) {
-    const { dataset: { id } } = target;
-    socket.emit('toggle', id );
-}
-
 /** переход на страницу указаную в дада атрибуте */
 function handleChangeLocation(target) {
     const { dataset: { href } } = target;
@@ -46,13 +41,13 @@ window.addEventListener('load', () => {
         $tr.dataset.id = _id;
 
         const itemHtml = `
-                <td>${ title }TEST</td>
-                <td>
-                    <input class="btn_check" type="checkbox" data-id="${ _id }" ${ completed ? 'checked' : '' }/>
-                <td>
-                    <button class="btn_update" data-href="/tasks/update/${ _id }">Update</button>
-                    <button class="btn_delete" data-id="${ _id }">Delete</button>
-                </td> 
+            <td>${ title }</td>
+            <td>
+                <input class="btn_check" type="checkbox" data-id="${ _id }" ${ completed ? 'checked' : '' }/>
+            <td>
+                <button class="btn_update" data-href="/tasks/update/${ _id }">Update</button>
+                <button class="btn_delete" data-id="${ _id }">Delete</button>
+            </td> 
         `;
 
         $tr.innerHTML = itemHtml;
@@ -66,9 +61,6 @@ window.addEventListener('load', () => {
 
     socket.on('toggle', ( taskId ) => {
         const $checkBox = document.querySelector( `.task__row[data-id="${ taskId }"] .btn_check` );
-        console.log(
-            $checkBox
-        )
         $checkBox.checked = !$checkBox.checked;
     });
 });

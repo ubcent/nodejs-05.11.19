@@ -120,48 +120,6 @@ app.get('/tasks', async ( req, res ) => {
     res.status( 200 ).render( 'index', { tasks });
 });
 
-/** создание новой задачи  */
-app.post('/tasks', async ( req, res ) => {
-    const { user } = req.body;
-    const plainUser = JSON.parse( user );
-
-    const task = new Task({ ...req.body, user: plainUser._id });  
-    await task.validate( async (errors) => {
-        if ( !errors ) {
-            await task.save();
-            res.status( 200 ).send();
-        } else {
-            res.status( 400 ).send();
-        }
-    });
-    res.redirect( '/tasks' );
-}); 
-
-/** удаление задачи */
-app.delete('/tasks', async ( req, res ) => {
-    try {
-        const { body: { id } } = req;
-        await Task.findByIdAndDelete(id);
-        res.status( 203 ).send();
-    } catch( e ) {
-        res.status( 403 ).send();
-    }
-});
-
-/** Переключение статуса задачи */
-app.patch('/tasks/:id', async ( req, res ) => {
-    const { params: { id } } = req;
-    try {
-        const task = await Task.findById( id );
-        // const modifiedTask = await Task.findOneAndUpdate({ _id: req.params.id }, { $set: { ...task, ...req.body } });
-        task.set({ completed: !task.completed });
-        task.save();
-        res.status( 200 ).send( task.completed );
-    } catch( e ) {
-        res.status( 304 ).send();
-    }
-});
-
 /** Страница редактирования */
 app.get('/tasks/update/:id', async ( req, res ) => {
     const { params: { id } } = req;
