@@ -61,9 +61,8 @@ module.exports = {
     },
     checkAuthentication: ( req, res, next ) => {
         const { headers: { authorization } } = req;
-        const activeUser = store.get( store.ACTIVE_USER );
-
-        if ( authorization || activeUser ) {
+      
+        if ( authorization ) {
             let token = null;
             if ( authorization ) {
                 const [ type, authToken ] = authorization.split(' ');
