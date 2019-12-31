@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Register</title>
+</head>
+<body>
+
+<h2>Регистрация</h2>
+
+<form method="POST" action="/register">
+  <input type="text" name="email" placeholder="Email" /><br>
+  <input type="text" name="firstName" placeholder="Имя" /><br>
+  <input type="text" name="lastName" placeholder="Фамилия" /><br>
+  <input type="password" name="password" placeholder="Пароль" /><br>
+  <input type="password" name="repassword" placeholder="Повторите пароль" /><br>
+  <input id="send" type="submit" value="Зарегистрироваться" />
+</form> 
+<br>
+
+<h4 id="errRegister" style="color:red;"></h4><br>
+
+<p>Уже зарегистрированы?</p>
+<a href="/auth">Войти</a><br>
+
+<script>
+  const $email = document.querySelector('input[name=email]');
+  const $firstName = document.querySelector('input[name=firstName]');
+  const $lastName = document.querySelector('input[name=lastName]');
+  const $password = document.querySelector('input[name=password]');
+  const $repassword = document.querySelector('input[name=repassword]');
+  const $errRegister = document.querySelector('#errRegister');
+  const $send = document.querySelector('#send');
+  $send.addEventListener('click', (event) => {
+    fetch('/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: $email.value,
+        firstName: $firstName.value,
+        lastName: $lastName.value,
+        password: $password.value,
+        repassword: $repassword.value
+      })
+    })
+      .then((response) => {
+        if (response.status !== 201) {
+          $errRegister.textContent = 'Ошибка регистрации';
+          return { email: null };
+        }
+        $errRegister.textContent = '';
+      })
+      .then((response) => {
+        window.location = '/auth';
+      });
+    event.preventDefault();
+  });  
+</script>
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+
+  <h3 style="font-style: oblique">Добавить задачу</h3>
+  <form method="POST" action="/tasks">
+    <input type="text" name="title" placeholder="Тема задачи" required />
+    <input type="text" name="body" placeholder="Текст задачи" required />
+    <input type="button" id="create" value="Создать задачу" />
+  </form>
+
+  <ul id="list"></ul>
+
+  <script>
+    window.addEventListener('load', () => {
+      const $list = document.querySelector('#list');
+      const $create = document.querySelector('#create');
+      const token = localStorage.getItem('token');
+      const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
+      if (!token) {
+        window.location = '/auth';
+      }
+      const socket = io.connect(`http://localhost:3000?token=${token}`);
+      socket.on(`created:${user._id}`, (task) => {
+        const $li = document.createElement('li');
+        const $h3 = document.createElement('h3');
+        const $a = document.createElement('a');
+        const $i = document.createElement('i');
+        const $but_compl = document.createElement('button');
+        const $but_prior = document.createElement('button');
+        $but_compl.textContent = task.completed ? 'Вернуть' : 'Выполнить';
+        $but_prior.textContent = task.priority ? 'Снять приоритет' : 'Установить приоритет';
+        $li.dataset.id = task._id;
+        $a.setAttribute('href', `/tasks/${task._id}`);
+        $but_compl.setAttribute('class', 'completed');
+        $but_prior.setAttribute('class', 'priority');
+        $h3.textContent = task.title;
+        $i.textContent = task.body;
+        $li.appendChild($a);
+        $a.appendChild($h3);
+        $li.appendChild($i);
+        $li.appendChild($but_compl);
+        $li.appendChild($but_prior);
+        $list.appendChild($li);
+      });
+      socket.on(`toggled:${user._id}`, (taskId) => {
+        const $but_compl = document.querySelector(`[data-id="${taskId}"] > button[class=completed]`);
+        $but_compl.textContent = $but_compl.textContent === 'Вернуть' ? 'Выполнить' : 'Вернуть';
+      });
+      socket.on(`changed:${user._id}`, (taskId) => {
+        const $but_prior = document.querySelector(`[data-id="${taskId}"] > button[class=priority]`);
+        $but_prior.textContent = $but_prior.textContent === 'Установить приоритет' ? 'Снять приоритет' : 'Установить приоритет';
+      });
+      $list.addEventListener('click', (event) => {
+        const $li = event.target.parentElement;
+        const id = $li.dataset.id;
+        if (event.target.className === 'completed') {
+          socket.emit('toggle', id);
+        } else if (event.target.className === 'priority') {
+          socket.emit('change', id);
+        }
+      });
+      $create.addEventListener('click', (event) => {
+        socket.emit('create', {
+          title: document.querySelector('input[name=title]').value,
+          body: document.querySelector('input[name=body]').value,
+          user: user._id,
+        });
+        event.preventDefault();
+      });
+      fetch('/tasks', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then((response) => {
+          if (response.status !== 200) {
+            localStorage.removeItem('token');
+            window.location = '/auth?err=err404';
+            return null;
+          }
+          return response.json();
+        })
+        .then((tasks) => {
+          tasks.forEach((task) => {
+            const $li = document.createElement('li');
+            const $h3 = document.createElement('h3');
+            const $a = document.createElement('a');
+            const $i = document.createElement('i');
+            const $but_compl = document.createElement('button');
+            const $but_prior = document.createElement('button');
+            $but_compl.textContent = task.completed ? 'Вернуть' : 'Выполнить';
+            $but_prior.textContent = task.priority ? 'Снять приоритет' : 'Установить приоритет';
+            $li.dataset.id = task._id;
+            $a.setAttribute('href', `/tasks/${task._id}`);
+            $but_compl.setAttribute('class', 'completed');
+            $but_prior.setAttribute('class', 'priority');
+            $h3.textContent = task.title;
+            $i.textContent = task.body;
+            $li.appendChild($a);
+            $a.appendChild($h3);
+            $li.appendChild($i);
+            $li.appendChild($but_compl);
+            $li.appendChild($but_prior);
+            $list.appendChild($li);
+          });
+        });
+    });
+  </script>
+</body>
+
+</html>

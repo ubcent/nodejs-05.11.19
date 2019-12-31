@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Authenticate</title>
+</head>
+<body>
+
+  <form method="POST" action="/auth">
+    <input id="username" type="text" placeholder="email" /><br/>
+    <input id="password" type="password" placeholder="password" /><br/>
+    <input id="send" type="submit" value="Войти" />
+  </form> 
+  <br>
+
+  <b id="errLogin" style="color:red;"></b>
+
+  <p>Еще не зарегистрированы?</p>
+  <a href="/register">Зарегистрироваться</a><br>
+
+  <script>
+    const $username = document.querySelector('#username');
+    const $password = document.querySelector('#password');
+    const $send = document.querySelector('#send');
+    $send.addEventListener('click', (event) => {
+      localStorage.removeItem('token');
+      fetch('/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: $username.value,
+          password: $password.value,
+        })
+      })
+        .then((response) => {
+          if (response.status !== 200) {
+            const $errLogin = document.querySelector('#errLogin');
+            $errLogin.textContent = 'Ошибка логина или пароля';
+            return { token: null };
+          }
+          return response.json();
+        })
+        .then((response) => {
+          if (response.token) {
+            const { token, ...user } = response;
+            localStorage.setItem('token', token);
+            localStorage.setItem('user', JSON.stringify(user));
+            window.location = '/';
+          }
+        });
+      event.preventDefault();
+    });
+  </script>
+</body>
+</html>
