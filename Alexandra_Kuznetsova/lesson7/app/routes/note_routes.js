@@ -2,14 +2,14 @@
 const Task = require('../../models/task');
 
 // функция добавления/изменения/просмотра/удаления задач коллекции
-module.exports = function(app, db) {
+module.exports = function(app) {
 
   // показать все задачи коллекции
-  app.get('/tasks/all', async (req, res) => {
+  app.get('/tasks', async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
     const { _id } = req.user;
   
-    const tasks = await Task.find({user: _id}).skip((page - 1) * limit).limit(limit);
+    const tasks = await Task.find({ user: req.user._id }).skip((page - 1) * limit).limit(limit);
   
     res.status(200).json(tasks);
   });
@@ -24,7 +24,7 @@ module.exports = function(app, db) {
   // добавить задачу в коллекцию
   app.post('/tasks', (req, res) => {
     const { _id } = req.user;
-    const task = new Task({...req.body, user: _id});
+    const task = new Task({ ...req.body, user: req.user._id });
   
     task.save()
       .then((savedTask) => {

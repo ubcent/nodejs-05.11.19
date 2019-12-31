@@ -1,7 +1,7 @@
 const User = require('../../models/user');
 const jwt = require('jsonwebtoken');
 
-module.exports = function(app, db) {
+module.exports = function(app) {
 
   // регистрация пользователя
   app.post('/register', async (req, res) => {
