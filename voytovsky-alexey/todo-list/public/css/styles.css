@@ -1,0 +1,176 @@
+body {
+  background-color: rgba(250, 244, 166, 0.479);
+  font-family: 'Ma Shan Zheng', cursive;
+}
+
+.body_hide {
+	opacity: 0;
+	transition: .5s opacity ease-in-out;
+}
+
+.body_visible {
+	opacity: 1;
+}
+
+form {
+  text-align: center;
+}
+
+form.classFactory {
+  position: fixed;
+  top: 10vh;
+  right: 10vw;
+  padding: 10px;
+  padding-top: 0;
+  border: 1px solid rgb(255, 0, 0);
+}
+
+#taskActions {
+  display: none;
+}
+
+.title {
+  display: block;
+  position: relative;
+  font-size: 18pt;
+  text-align: center;
+}
+
+.title::before {
+  content: "";
+  position: absolute;
+  border-top: 1px solid black;
+  width: 43%;
+  top: 50%;
+  left: 10px;
+}
+
+.title::after {
+  content: "";
+  position: absolute;
+  border-top: 1px solid black;
+  width: 43%;
+  top: 50%;
+  right: 10px;
+}
+
+fieldset {
+  display: block;
+  margin: 20px 1%;
+  margin-bottom: 20px;
+  padding: 0 auto;
+  padding: 15px 0;
+  border: 0;
+  border-top: 1px solid rgb(156, 155, 155);
+  width: 98%;
+}
+
+legend {
+  display: table; 
+  min-width: 0px;
+  max-width: 70%;
+  position: relative;
+  margin: auto;
+  padding: 5px 20px;
+  color: #31312a;
+  font-size: 20px;
+  text-align: center;
+}
+
+input[type=submit] {
+  margin-top: 25px;
+  text-align: center;
+}
+
+h3 {
+  position: absolute;
+  top: 70px;
+  left: 200px;
+}
+
+p.note {
+  font-size: 1rem;
+  color: rgb(255, 123, 0);
+}
+
+a {
+  color: brown;
+  text-decoration: none;
+}
+
+a.logOut {
+  position: fixed;
+  top: 0.1vh;
+  right: 60px;
+  text-decoration: underline;
+  color: rgb(228, 81, 62);
+}
+
+b.completed {
+  position: absolute;
+  left: 5px;
+  color: rgb(107, 163, 51);
+}
+
+b.notCompleted {
+  position: absolute;
+  left: 5px;
+  color: rgb(13, 24, 43);
+}
+
+button {
+  position: absolute;
+}
+
+.buttonTaskState {
+  left: 40vw;
+}
+
+.buttonTaskDelete {
+  right: 50vw;
+}
+
+/* Down arrow */
+.getUp {
+  display: block;
+  position: fixed;
+  bottom: 5vh;
+  right: 5vh;
+  margin: 30px;
+}
+
+.getUp span {
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-bottom: 5px solid rgb(49, 122, 187);
+  border-right: 5px solid rgb(49, 122, 187);
+  transform: rotate(45deg);
+  margin: -16px;
+  animation: getUp 2s infinite;
+  transform: rotate(180deg);
+}
+
+.getUp span:nth-child(2){
+  animation-delay: -0.2s;
+}
+
+.getUp span:nth-child(3){
+  animation-delay: -0.4s;
+}
+
+@keyframes getUp {
+  0% {
+    opacity: 0;
+    transform: rotate(-135deg) translate(20px, 20px);
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: rotate(-135deg) translate(-20px, -20px);
+  }
+}
