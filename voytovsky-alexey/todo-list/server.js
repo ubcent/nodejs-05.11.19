@@ -37,6 +37,9 @@ mongoose.connect(db.uri, {
 })
 .catch(error => handleError(error));
 
+// It lets mongoose call the createIndex method on the mongodb native driver
+mongoose.set('useCreateIndex', true);
+
 // Controllers inclusion
 require('./index')(app);
 
