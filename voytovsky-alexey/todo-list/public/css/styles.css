@@ -18,8 +18,8 @@ form {
 
 form.classFactory {
   position: fixed;
-  top: 10vh;
-  right: 10vw;
+  top: 50px;
+  right: 50px;
   padding: 10px;
   padding-top: 0;
   border: 1px solid rgb(255, 0, 0);
@@ -123,11 +123,13 @@ button {
 }
 
 .buttonTaskState {
-  left: 40vw;
+  left: 450px;
+  /* left: 45%; */
 }
 
 .buttonTaskDelete {
-  right: 50vw;
+  left: 550px;
+  /* right: 40%; */
 }
 
 /* Down arrow */
