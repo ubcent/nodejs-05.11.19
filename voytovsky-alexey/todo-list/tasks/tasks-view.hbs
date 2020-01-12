@@ -19,13 +19,12 @@
   <form class="classFactory" method="POST" action="/tasks">
     <fieldset>
       <legend>Create a new one</legend>
-      <label for="taskname">Name of new entry</label>
+
+      <label for="taskname">Name of a new entry</label>
       <input type="text" name="title" id="taskname" /><br />
 
-{{!--       
-
-      <label for="tasktime">Время выполнения задачи</label>
-      <input type="text" name="deadline" id="tasktime"/> --}}
+      {{!-- <label for="tasktime">Deadline (dd/mm/yyyy)</label><br />
+      <input type="text" name="deadline" id="tasktime"/><br /> --}}
 
       <input type="submit" value="Create" />
     </fieldset>

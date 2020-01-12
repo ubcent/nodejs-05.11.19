@@ -1,4 +1,5 @@
-const Task = require('./task-model');
+const Task        = require('./task-model');
+const validation  = require('../validation');
 module.exports = app => {
   // Create new task
   app.post('/tasks', async (req, res) => {
@@ -44,3 +45,16 @@ module.exports = app => {
     res.redirect('/tasks');
   });
 };
+
+// schema.validate({ username: 'abc', birth_year: 1994 });
+// // -> { value: { username: 'abc', birth_year: 1994 } }
+
+// schema.validate({});
+// // -> { value: {}, error: '"username" is required' }
+
+// // Also -
+
+// try {
+//     const value = await schema.validateAsync({ username: 'abc', birth_year: 1994 });
+// }
+// catch (err) { }
