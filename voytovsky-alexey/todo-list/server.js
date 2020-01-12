@@ -19,10 +19,11 @@ app.set('view engine', 'hbs');
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: false }));
 app.use(session({
-  resave: true,
-  saveUninitialized: false,
-  secret: 'super secret phrase',
-  store: new MongoStore({ mongooseConnection: mongoose.connection }),
+  resave: true,                   // Resave session if something is changed
+  saveUninitialized: false,       // No session creation for unauthorized users
+  secret: 'super secret phrase',  // Session signature ( session ID --> cookies ) for session ID secure
+                                  //    some private key (only server knows it)
+  store: new MongoStore({ mongooseConnection: mongoose.connection }),   // Store for sessions
 }));
 app.use(passport.initialize);
 app.use(passport.session);
