@@ -15,7 +15,7 @@ module.exports = app => {
     if (restBody.password === repassword) {
       // No repassword saving to database
       const user = new User(restBody);
-      const savedUser = await user.save();
+      await user.save();
       req.logout();
       res.redirect('/auth');
 
