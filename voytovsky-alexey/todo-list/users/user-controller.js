@@ -1,6 +1,6 @@
 const User      = require('./user-model');
 const passport  = require('../auth/auth-local');
-const validate  = require('../validation');
+const { schema } = require('../validation');
 
 module.exports = app => {
   // Registration
@@ -11,6 +11,14 @@ module.exports = app => {
 
   app.post('/register', async (req, res) => {
     const { repassword, ...restBody } = req.body;
+
+    try {
+      await schema.validateAsync({ email: req.body.email, password: req.body.password });
+    }
+    catch(err) {
+      throw new Error(err);
+      // Render err
+    }
 
     if (restBody.password === repassword) {
       // No repassword saving to database
@@ -40,17 +48,3 @@ module.exports = app => {
     res.redirect('/auth');
   });
 };
-
-// // From validation
-// schema.validate({ username: 'abc', birth_year: 1994 });
-// // -> { value: { username: 'abc', birth_year: 1994 } }
-
-// schema.validate({});
-// // -> { value: {}, error: '"username" is required' }
-
-// // Also -
-
-// try {
-//     const value = await schema.validateAsync({ username: 'abc', birth_year: 1994 });
-// }
-// catch (err) { }
