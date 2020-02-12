@@ -1,11 +1,21 @@
 const Task        = require('./task-model');
-const validation  = require('../validation');
+const { schema }  = require('../validation');
+
 module.exports = app => {
   // Create new task
   app.post('/tasks', async (req, res) => {
     const { _id } = req.user;
     const task = new Task({ ...req.body, user: _id, time: Date() });  // req.body[user] = _id
-    await task.save();
+
+    try {
+      // await schema.validateAsync({ title: req.body.email, password: req.body.password });
+      await task.save();
+    }
+    catch(err) {
+      throw new Error(err);
+      // Render err
+    }
+
     res.redirect('/tasks');
   });
 
@@ -45,16 +55,3 @@ module.exports = app => {
     res.redirect('/tasks');
   });
 };
-
-// schema.validate({ username: 'abc', birth_year: 1994 });
-// // -> { value: { username: 'abc', birth_year: 1994 } }
-
-// schema.validate({});
-// // -> { value: {}, error: '"username" is required' }
-
-// // Also -
-
-// try {
-//     const value = await schema.validateAsync({ username: 'abc', birth_year: 1994 });
-// }
-// catch (err) { }
