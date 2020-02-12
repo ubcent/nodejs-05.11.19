@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <input id="username" type="text" placeholder="username" />
+  <input id="password" type="password" placeholder="password" />
+  <input id="send" type="submit" />
+<script>
+  const $username = document.querySelector('#username');
+  const $password = document.querySelector('#password');
+  const $send = document.querySelector('#send');
+
+  $send.addEventListener('click', (e) => {
+    localStorage.removeItem('token');
+
+    fetch('/auth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: $username.value,
+        password: $password.value,
+      }),
+    })
+      .then((response) => {
+        if (response.status != 200) {
+
+          // TODO: make form red
+          return { token: null };
+        }
+
+        // User and token returns in response (127 line in sockets.js)
+        return response.json();
+      })
+      .then((response) => {
+        if (response.token) {
+          // Saving token in localStorage by the key we need: setItem(keyName, keyValue);
+          const { token, ...user } = response;
+          localStorage.setItem('token', token);
+          localStorage.setItem('user', JSON.stringify(user));
+
+          // Redirect
+          window.location = '/';
+        }
+      })
+
+    e.preventDefault();
+  });
+</script>
+</body>
+</html>
