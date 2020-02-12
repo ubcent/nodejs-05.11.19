@@ -1,6 +1,7 @@
-const User      = require('./user-model');
-const passport  = require('../auth/auth-local');
-const { schema } = require('../validation');
+const User        = require('./user-model');
+const passport    = require('../auth/auth-local');
+const { schema }  = require('../validation');
+const path        = require('path');
 
 module.exports = app => {
   // Registration
@@ -12,13 +13,14 @@ module.exports = app => {
   app.post('/register', async (req, res) => {
     const { repassword, ...restBody } = req.body;
 
-    try {
-      await schema.validateAsync({ email: req.body.email, password: req.body.password });
-    }
-    catch(err) {
-      throw new Error(err);
-      // Render err
-    }
+    // !!! FIX IT
+    // try {
+    //   await schema.validateAsync({ email: req.body.email, password: req.body.password });
+    // }
+    // catch(err) {
+    //   throw new Error(err);
+    //   // Render err
+    // }
 
     if (restBody.password === repassword) {
       // No repassword saving to database
@@ -36,10 +38,17 @@ module.exports = app => {
   app.post('/auth', passport.authenticate);
 
   // Authentication redirect & error handling
+
+  //* app.get('/auth', (req, res) => {
+  //*   if (req.user) return res.redirect('/tasks');
+  //*   const { error } = req.query;
+  //*   res.render('../auth/auth-view', { error });
+  //* });
+
   app.get('/auth', (req, res) => {
     if (req.user) return res.redirect('/tasks');
-    const { error } = req.query;
-    res.render('../auth/auth-view', { error });
+    // const { error } = req.query; //! TODO THIS
+    res.sendFile(path.join(__dirname, '../public/html', 'auth.html'));
   });
 
   // Sign out
